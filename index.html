@@ -149,17 +149,25 @@
             position: relative;
             overflow: hidden;
             touch-action: manipulation;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
         }
         
-        .btn:active {
+        .btn:active, .btn:focus {
             transform: translateY(4px);
             box-shadow: 0 1px 0 #e04d87;
+            outline: none;
         }
         
         .btn:disabled {
             opacity: 0.6;
             transform: none !important;
             box-shadow: 0 5px 0 #e04d87 !important;
+            cursor: not-allowed;
+        }
+        
+        .btn.active {
+            background: linear-gradient(to right, #ff9a3d, #ff7bac);
         }
         
         .game-area {
@@ -551,6 +559,12 @@
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
             z-index: 100;
             border: 3px solid white;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        
+        .sound-toggle:active {
+            transform: scale(0.95);
         }
         
         @keyframes fadeIn {
@@ -715,7 +729,7 @@
         }
         
         /* Melhorar toques para mobile */
-        button, .heart, .grid-item, .puzzle-piece, .rainbow-color {
+        button, .heart, .grid-item, .puzzle-piece, .rainbow-color, .flower {
             cursor: pointer;
             -webkit-user-select: none;
             -moz-user-select: none;
@@ -739,6 +753,11 @@
             height: 10px;
             opacity: 0;
         }
+        
+        /* Corrigir problema de toque em iOS */
+        .touch-fix {
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
@@ -752,7 +771,7 @@
         <div id="screen1" class="screen active">
             <h1>Para meu Kajuzinho 💖</h1>
             <div class="intro-text">
-                <p>Querida Kajuzinho,</p>
+                <p>Meu querido Kajuzinho,</p>
                 <p>Sei que magoei você e meu coração está apertadinho só de pensar nisso... 😔</p>
                 <p>Preparei esse joguinho especial com todo meu carinho, porque palavras às vezes não são suficientes para mostrar o quanto me importo com você.</p>
                 <p>Cada minigame tem uma mensagem do meu coração para o seu. Espero que você possa sentir minha sinceridade em cada detalhe.</p>
@@ -917,26 +936,6 @@
     <!-- Elemento para confete -->
     <div id="celebration" class="celebration"></div>
 
-    <!-- Áudio para sons -->
-    <audio id="heartSound" preload="auto">
-        <!-- Criaremos o som via JavaScript -->
-    </audio>
-    <audio id="successSound" preload="auto">
-        <!-- Criaremos o som via JavaScript -->
-    </audio>
-    <audio id="bloomSound" preload="auto">
-        <!-- Criaremos o som via JavaScript -->
-    </audio>
-    <audio id="puzzleSound" preload="auto">
-        <!-- Criaremos o som via JavaScript -->
-    </audio>
-    <audio id="rainbowSound" preload="auto">
-        <!-- Criaremos o som via JavaScript -->
-    </audio>
-    <audio id="celebrationSound" preload="auto">
-        <!-- Criaremos o som via JavaScript -->
-    </audio>
-
     <script>
         // Variáveis do jogo
         let heartsCollected = 0;
@@ -952,15 +951,15 @@
         // Array para armazenar mensagens desbloqueadas
         let unlockedMessages = [];
         
-        // Inicializar o jogo
+        // Inicializar o jogo quando a página carregar
         document.addEventListener('DOMContentLoaded', function() {
+            console.log("Jogo carregado! Iniciando...");
+            
+            // Inicializar todos os jogos
             createHearts();
             createMemoryGame();
             createPuzzle();
             createRainbow();
-            
-            // Criar sons fofinhos
-            createSounds();
             
             // Mostrar dica de swipe após 3 segundos
             setTimeout(() => {
@@ -977,12 +976,56 @@
             
             // Atualizar ícone do som
             updateSoundIcon();
+            
+            // Forçar redimensionamento para evitar problemas de layout
+            setTimeout(() => {
+                window.dispatchEvent(new Event('resize'));
+            }, 100);
+            
+            console.log("Jogo pronto para começar!");
         });
         
         // Configurar eventos touch
         function setupTouchEvents() {
-            // Prevenir comportamento padrão de toque longo
+            console.log("Configurando eventos touch...");
+            
+            // Adicionar classe touch-fix a todos os elementos clicáveis
+            const clickableElements = document.querySelectorAll('.btn, .heart, .grid-item, .puzzle-piece, .rainbow-color, .flower, .sound-toggle');
+            clickableElements.forEach(el => {
+                el.classList.add('touch-fix');
+            });
+            
+            // Prevenir comportamento padrão de toque longo apenas em elementos específicos
             document.addEventListener('touchstart', function(e) {
+                if (e.target.classList.contains('btn') || 
+                    e.target.classList.contains('heart') ||
+                    e.target.classList.contains('grid-item') ||
+                    e.target.classList.contains('puzzle-piece') ||
+                    e.target.classList.contains('rainbow-color') ||
+                    e.target.classList.contains('flower') ||
+                    e.target.classList.contains('sound-toggle')) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+            
+            // Melhor feedback visual para toques
+            const touchElements = document.querySelectorAll('.heart, .grid-item, .puzzle-piece, .rainbow-color, .flower, .sound-toggle');
+            touchElements.forEach(el => {
+                el.addEventListener('touchstart', function() {
+                    this.style.opacity = '0.8';
+                });
+                
+                el.addEventListener('touchend', function() {
+                    this.style.opacity = '1';
+                });
+                
+                el.addEventListener('touchcancel', function() {
+                    this.style.opacity = '1';
+                });
+            });
+            
+            // Corrigir problema de botões não funcionando no iOS
+            document.addEventListener('touchmove', function(e) {
                 if (e.target.classList.contains('btn') || 
                     e.target.classList.contains('heart') ||
                     e.target.classList.contains('grid-item') ||
@@ -993,211 +1036,567 @@
                 }
             }, { passive: false });
             
-            // Melhor feedback visual para toques
-            const touchElements = document.querySelectorAll('.heart, .grid-item, .puzzle-piece, .rainbow-color, .flower');
-            touchElements.forEach(el => {
-                el.addEventListener('touchstart', function() {
-                    this.style.opacity = '0.8';
-                });
-                
-                el.addEventListener('touchend', function() {
-                    this.style.opacity = '1';
-                });
-            });
+            console.log("Eventos touch configurados!");
         }
         
-        // Criar sons fofinhos usando Web Audio API
-        function createSounds() {
-            // Som para corações (sino suave)
-            createHeartSound();
+        // Alternar som ligado/desligado
+        function toggleSound() {
+            console.log("Alternando som...");
+            soundEnabled = !soundEnabled;
+            updateSoundIcon();
             
-            // Som para jogo da memória (notas alegres)
-            createSuccessSound();
-            
-            // Som para flor desabrochando (som de flutuação)
-            createBloomSound();
-            
-            // Som para quebra-cabeça (notas mágicas)
-            createPuzzleSound();
-            
-            // Som para arco-íris (escala ascendente)
-            createRainbowSound();
-            
-            // Som para celebração final (fanfarra fofa)
-            createCelebrationSound();
-        }
-        
-        function createHeartSound() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
-            
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
-            
-            oscillator.frequency.value = 523.25; // Nota C5
-            oscillator.type = 'sine';
-            
-            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
-            
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 1.5);
-            
-            // Criar mais osciladores para som de sino
-            for (let i = 1; i <= 3; i++) {
-                setTimeout(() => {
-                    const osc2 = audioContext.createOscillator();
-                    const gain2 = audioContext.createGain();
-                    
-                    osc2.connect(gain2);
-                    gain2.connect(audioContext.destination);
-                    
-                    osc2.frequency.value = 523.25 * (i + 1);
-                    osc2.type = 'sine';
-                    
-                    gain2.gain.setValueAtTime(0, audioContext.currentTime);
-                    gain2.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.1);
-                    gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
-                    
-                    osc2.start(audioContext.currentTime);
-                    osc2.stop(audioContext.currentTime + 1);
-                }, i * 100);
+            // Tocar som de confirmação
+            if (soundEnabled) {
+                playCuteSound('heart');
             }
         }
         
-        function createSuccessSound() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const notes = [659.25, 783.99, 987.77, 1318.51]; // E5, G5, B5, E6
-            const duration = 0.3;
-            
-            notes.forEach((freq, index) => {
-                setTimeout(() => {
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-                    
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-                    
-                    oscillator.frequency.value = freq;
-                    oscillator.type = 'triangle';
-                    
-                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                    gainNode.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.05);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-                    
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + duration);
-                }, index * 150);
-            });
+        // Atualizar ícone do som
+        function updateSoundIcon() {
+            const soundToggle = document.getElementById('soundToggle');
+            soundToggle.innerHTML = soundEnabled ? '🔔' : '🔕';
+            soundToggle.title = soundEnabled ? 'Som ligado' : 'Som desligado';
         }
         
-        function createBloomSound() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const oscillator = audioContext.createOscillator();
-            const gainNode = audioContext.createGain();
+        // Mudar entre telas - FUNÇÃO CORRIGIDA
+        function changeScreen(screenNumber) {
+            console.log(`Mudando para tela ${screenNumber}`);
             
-            oscillator.connect(gainNode);
-            gainNode.connect(audioContext.destination);
+            // Esconder a tela atual
+            document.getElementById(`screen${currentScreen}`).classList.remove('active');
             
-            // Som de flutuação suave
-            oscillator.frequency.setValueAtTime(329.63, audioContext.currentTime); // E4
-            oscillator.frequency.exponentialRampToValueAtTime(659.25, audioContext.currentTime + 1.5); // E5
+            // Mostrar a nova tela
+            document.getElementById(`screen${screenNumber}`).classList.add('active');
             
-            oscillator.type = 'sine';
+            // Atualizar a tela atual
+            currentScreen = screenNumber;
             
-            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-            gainNode.gain.linearRampToValueAtTime(0.25, audioContext.currentTime + 0.3);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2);
+            // Se for a tela final, mostrar todas as mensagens desbloqueadas
+            if (screenNumber === 7) {
+                showAllUnlockedMessages();
+            }
             
-            oscillator.start(audioContext.currentTime);
-            oscillator.stop(audioContext.currentTime + 2);
+            // Focar no botão principal da nova tela
+            setTimeout(() => {
+                const buttons = document.querySelectorAll(`#screen${screenNumber} .btn:not([disabled])`);
+                if (buttons.length > 0) {
+                    buttons[0].focus();
+                }
+            }, 100);
+            
+            console.log(`Agora na tela ${currentScreen}`);
         }
         
-        function createPuzzleSound() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const notes = [523.25, 587.33, 659.25, 698.46, 783.99]; // C5, D5, E5, F5, G5
-            const duration = 0.2;
+        // Mostrar todas as mensagens desbloqueadas na tela final
+        function showAllUnlockedMessages() {
+            const allMessagesDiv = document.getElementById('allMessages');
+            allMessagesDiv.innerHTML = '';
             
-            notes.forEach((freq, index) => {
-                setTimeout(() => {
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-                    
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-                    
-                    oscillator.frequency.value = freq;
-                    oscillator.type = 'sine';
-                    
-                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                    gainNode.gain.linearRampToValueAtTime(0.15, audioContext.currentTime + 0.05);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-                    
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + duration);
-                }, index * 100);
-            });
+            let hasMessages = false;
+            
+            for (let i = 1; i <= 5; i++) {
+                if (unlockedMessages[i]) {
+                    hasMessages = true;
+                    const messageElement = document.getElementById(`message${i}`);
+                    if (messageElement) {
+                        const messageClone = messageElement.cloneNode(true);
+                        messageClone.classList.add('message-unlocked');
+                        messageClone.style.display = 'block';
+                        messageClone.style.margin = '15px 0';
+                        allMessagesDiv.appendChild(messageClone);
+                    }
+                }
+            }
+            
+            if (hasMessages) {
+                // Adicionar título antes das mensagens
+                const title = document.createElement('p');
+                title.innerHTML = '<strong>Veja todas as mensagens que você desbloqueou:</strong>';
+                title.style.marginBottom = '20px';
+                title.style.textAlign = 'center';
+                allMessagesDiv.insertBefore(title, allMessagesDiv.firstChild);
+            }
         }
         
-        function createRainbowSound() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const notes = [261.63, 329.63, 392.00, 493.88, 587.33]; // C4, E4, G4, B4, D5
-            const duration = 0.25;
+        // ========== MINI-GAME 1: CORAÇÕES ==========
+        function createHearts() {
+            console.log("Criando corações...");
+            const heartContainer = document.getElementById('heartContainer');
+            heartContainer.innerHTML = '';
             
-            notes.forEach((freq, index) => {
-                setTimeout(() => {
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
-                    
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
-                    
-                    oscillator.frequency.value = freq;
-                    oscillator.type = 'sine';
-                    
-                    // Aumentar volume gradualmente
-                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                    gainNode.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.1);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
-                    
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + duration);
-                }, index * 200);
-            });
+            // Criar 12 corações (8 necessários) - menos para mobile
+            for (let i = 0; i < 12; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '💖';
+                heart.dataset.collected = 'false';
+                
+                // Evento de toque corrigido
+                heart.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    collectHeart(this);
+                });
+                
+                heart.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    collectHeart(this);
+                });
+                
+                function collectHeart(heartElement) {
+                    if (heartElement.dataset.collected === 'false') {
+                        heartElement.dataset.collected = 'true';
+                        heartElement.classList.add('clicked');
+                        heartsCollected++;
+                        
+                        console.log(`Coração coletado! Total: ${heartsCollected}`);
+                        
+                        // Tocar som fofinho ao coletar coração
+                        if (soundEnabled && heartsCollected <= 8) {
+                            playCuteSound('heart');
+                        }
+                        
+                        // Atualizar contador
+                        document.getElementById('heartCounter').textContent = 
+                            `Corações: ${heartsCollected}/8`;
+                        
+                        // Atualizar barra de progresso
+                        const progress = (heartsCollected / 8) * 100;
+                        document.getElementById('progress1').style.width = `${progress}%`;
+                        
+                        // Se completou o jogo
+                        if (heartsCollected >= 8) {
+                            console.log("Minigame 1 completo!");
+                            
+                            // Mostrar mensagem com animação
+                            showMessage(1);
+                            
+                            // Tocar som de sucesso
+                            playCuteSound('success');
+                            
+                            // Habilitar botão próximo
+                            document.getElementById('nextBtn1').disabled = false;
+                            
+                            // Adicionar confete
+                            createConfetti();
+                        }
+                    }
+                }
+                
+                heartContainer.appendChild(heart);
+            }
+            console.log("Corações criados!");
         }
         
-        function createCelebrationSound() {
-            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-            const notes = [
-                {freq: 523.25, time: 0},   // C5
-                {freq: 659.25, time: 0.2}, // E5
-                {freq: 783.99, time: 0.4}, // G5
-                {freq: 1046.50, time: 0.6}, // C6
-                {freq: 783.99, time: 0.8}, // G5
-                {freq: 1046.50, time: 1.0} // C6
+        // ========== MINI-GAME 2: JOGO DA MEMÓRIA ==========
+        function createMemoryGame() {
+            console.log("Criando jogo da memória...");
+            const memoryGrid = document.getElementById('memoryGrid');
+            memoryGrid.innerHTML = '';
+            
+            // Pares de emojis especiais (menos pares para mobile)
+            const emojiPairs = [
+                '🍦', '🍦', // Sorvete - momentos doces
+                '🎬', '🎬', // Cinema - nossos filmes
+                '☕', '☕', // Café - conversas gostosas
+                '🎵', '🎵'  // Música - nossas músicas
             ];
             
-            notes.forEach(note => {
-                setTimeout(() => {
-                    const oscillator = audioContext.createOscillator();
-                    const gainNode = audioContext.createGain();
+            // Embaralhar os emojis
+            const shuffledEmojis = [...emojiPairs].sort(() => Math.random() - 0.5);
+            
+            // Criar as cartas do jogo da memória
+            shuffledEmojis.forEach((emoji, index) => {
+                const card = document.createElement('div');
+                card.className = 'grid-item';
+                card.dataset.emoji = emoji;
+                card.dataset.index = index;
+                card.dataset.found = 'false';
+                
+                // Eventos corrigidos
+                card.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleCardClick(this);
+                });
+                
+                card.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleCardClick(this);
+                });
+                
+                function handleCardClick(cardElement) {
+                    if (cardElement.dataset.found === 'true' || !canFlip) return;
                     
-                    oscillator.connect(gainNode);
-                    gainNode.connect(audioContext.destination);
+                    console.log(`Carta clicada: ${cardElement.dataset.emoji}`);
                     
-                    oscillator.frequency.value = note.freq;
-                    oscillator.type = 'triangle';
+                    // Mostrar o emoji
+                    cardElement.textContent = emoji;
+                    cardElement.classList.add('memory-pair');
                     
-                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-                    gainNode.gain.linearRampToValueAtTime(0.25, audioContext.currentTime + 0.1);
-                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                    // Tocar som ao virar carta
+                    if (soundEnabled) {
+                        playCuteSound('heart');
+                    }
                     
-                    oscillator.start(audioContext.currentTime);
-                    oscillator.stop(audioContext.currentTime + 0.5);
-                }, note.time * 1000);
+                    if (!firstCard) {
+                        // Primeira carta virada
+                        firstCard = cardElement;
+                        console.log("Primeira carta virada");
+                    } else {
+                        // Segunda carta virada
+                        canFlip = false;
+                        
+                        if (firstCard.dataset.emoji === cardElement.dataset.emoji) {
+                            // Par encontrado!
+                            console.log("Par encontrado!");
+                            
+                            firstCard.dataset.found = 'true';
+                            cardElement.dataset.found = 'true';
+                            firstCard.classList.add('found');
+                            cardElement.classList.add('found');
+                            
+                            memoryPairs++;
+                            document.getElementById('memoryCounter').textContent = 
+                                `Pares: ${memoryPairs}/4`;
+                            
+                            // Tocar som de sucesso para par encontrado
+                            if (soundEnabled) {
+                                playCuteSound('success');
+                            }
+                            
+                            // Se completou o jogo
+                            if (memoryPairs >= 4) {
+                                console.log("Minigame 2 completo!");
+                                
+                                // Mostrar mensagem com animação
+                                showMessage(2);
+                                
+                                // Tocar som especial de conclusão
+                                playCuteSound('celebration');
+                                
+                                // Habilitar botão próximo
+                                document.getElementById('nextBtn2').disabled = false;
+                                
+                                // Adicionar confete
+                                createConfetti();
+                            }
+                            
+                            firstCard = null;
+                            canFlip = true;
+                        } else {
+                            // Não é par, esconder novamente após 1 segundo
+                            console.log("Não é par, escondendo...");
+                            
+                            setTimeout(() => {
+                                firstCard.textContent = '';
+                                cardElement.textContent = '';
+                                firstCard.classList.remove('memory-pair');
+                                cardElement.classList.remove('memory-pair');
+                                firstCard = null;
+                                canFlip = true;
+                            }, 1000);
+                        }
+                    }
+                }
+                
+                memoryGrid.appendChild(card);
             });
+            console.log("Jogo da memória criado!");
+        }
+        
+        // ========== MINI-GAME 3: FLOR QUE DESABROCHA ==========
+        function waterFlower() {
+            console.log(`Regando flor... ${waterCount + 1}/4`);
+            
+            // Tocar som fofinho ao regar
+            if (soundEnabled) {
+                playCuteSound('heart');
+            }
+            
+            waterCount++;
+            
+            // Atualizar contador
+            document.getElementById('waterCounter').textContent = 
+                `Regada: ${waterCount}/4 vezes`;
+            
+            const flower = document.getElementById('mainFlower');
+            
+            // Animar a flor conforme é regada
+            if (waterCount === 1) {
+                flower.textContent = '🌱';
+            } else if (waterCount === 2) {
+                flower.textContent = '🌿';
+            } else if (waterCount === 3) {
+                flower.textContent = '🌷';
+            } else if (waterCount === 4) {
+                flower.textContent = '🌸';
+                flower.classList.add('bloom');
+                
+                console.log("Minigame 3 completo! Flor desabrochada!");
+                
+                // Tocar som especial de flor desabrochando
+                playCuteSound('bloom');
+                
+                // Criar efeito de pétalas caindo
+                createPetals();
+                
+                // Mostrar mensagem com animação
+                showMessage(3);
+                
+                // Habilitar botão próximo
+                document.getElementById('nextBtn3').disabled = false;
+                
+                // Adicionar confete
+                createConfetti();
+            }
+            
+            // Feedback tátil (vibração) se suportado
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+        }
+        
+        function createPetals() {
+            const petalsContainer = document.getElementById('petalsContainer');
+            petalsContainer.innerHTML = '';
+            
+            // Criar 10 pétalas caindo (menos para mobile)
+            for (let i = 0; i < 10; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                petal.textContent = '🌸';
+                petal.style.left = `${Math.random() * 100}%`;
+                petal.style.animationDelay = `${Math.random() * 2}s`;
+                petal.style.fontSize = `${Math.random() * 1 + 1.2}rem`;
+                
+                petalsContainer.appendChild(petal);
+            }
+        }
+        
+        // ========== MINI-GAME 4: QUEBRA-CABEÇA ==========
+        function createPuzzle() {
+            console.log("Criando quebra-cabeça...");
+            const puzzleContainer = document.getElementById('puzzleContainer');
+            puzzleContainer.innerHTML = '';
+            
+            // Mensagem a ser revelada (mais curta para mobile)
+            const messageParts = [
+                {text: "Kajuzinho,", emoji: "1️⃣"},
+                {text: "eu", emoji: "2️⃣"},
+                {text: "sinto", emoji: "3️⃣"},
+                {text: "muito", emoji: "4️⃣"},
+                {text: "💖", emoji: "🌸"},
+                {text: "de", emoji: "✨"},
+                {text: "verdade!", emoji: "🦋"},
+                {text: "Prometo", emoji: "🌟"},
+                {text: "ser", emoji: "🌷"},
+                {text: "melhor!", emoji: "💝"}
+            ];
+            
+            // Embaralhar as peças
+            const shuffledParts = [...messageParts].sort(() => Math.random() - 0.5);
+            
+            // Criar peças do quebra-cabeça
+            shuffledParts.forEach((part, index) => {
+                const piece = document.createElement('div');
+                piece.className = 'puzzle-piece';
+                piece.innerHTML = part.emoji;
+                piece.dataset.order = messageParts.findIndex(p => p.text === part.text);
+                piece.dataset.text = part.text;
+                
+                // Eventos corrigidos
+                piece.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handlePuzzleClick(this);
+                });
+                
+                piece.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handlePuzzleClick(this);
+                });
+                
+                function handlePuzzleClick(pieceElement) {
+                    // Verificar se a peça foi clicada na ordem correta
+                    const expectedOrder = getNextPuzzleOrder();
+                    const pieceOrder = parseInt(pieceElement.dataset.order);
+                    
+                    console.log(`Peça clicada: ordem ${pieceOrder}, esperada: ${expectedOrder}`);
+                    
+                    if (pieceOrder === expectedOrder) {
+                        pieceElement.classList.add('solved');
+                        
+                        // Tocar som fofinho ao colocar peça correta
+                        if (soundEnabled) {
+                            playCuteSound('puzzle');
+                        }
+                        
+                        // Adicionar texto à mensagem
+                        const hiddenMessage = document.getElementById('hiddenMessage');
+                        hiddenMessage.style.display = 'block';
+                        hiddenMessage.innerHTML += ` ${pieceElement.dataset.text}`;
+                        
+                        // Verificar se o puzzle foi resolvido
+                        const solvedPieces = document.querySelectorAll('.puzzle-piece.solved').length;
+                        console.log(`Peças resolvidas: ${solvedPieces}/${messageParts.length}`);
+                        
+                        if (solvedPieces === messageParts.length) {
+                            console.log("Minigame 4 completo! Quebra-cabeça resolvido!");
+                            
+                            // Mostrar mensagem com animação
+                            showMessage(4);
+                            
+                            puzzleSolved = true;
+                            document.getElementById('nextBtn4').disabled = false;
+                            
+                            // Tocar som de celebração
+                            playCuteSound('celebration');
+                            
+                            // Adicionar confete
+                            createConfetti();
+                        }
+                    } else {
+                        console.log("Peça errada!");
+                        
+                        // Tocar som de erro
+                        if (soundEnabled) {
+                            playErrorSound();
+                        }
+                        
+                        // Feedback visual de erro
+                        pieceElement.style.background = 'linear-gradient(145deg, #ffcccc, #ff9999)';
+                        setTimeout(() => {
+                            pieceElement.style.background = '';
+                        }, 300);
+                    }
+                }
+                
+                puzzleContainer.appendChild(piece);
+            });
+            console.log("Quebra-cabeça criado!");
+        }
+        
+        function getNextPuzzleOrder() {
+            const solvedPieces = document.querySelectorAll('.puzzle-piece.solved');
+            return solvedPieces.length;
+        }
+        
+        // ========== MINI-GAME 5: ARCO-ÍRIS ==========
+        function createRainbow() {
+            console.log("Criando arco-íris...");
+            const rainbowContainer = document.getElementById('rainbowContainer');
+            rainbowContainer.innerHTML = '';
+            
+            // Cores do arco-íris (menos cores para mobile)
+            const rainbowColorsData = [
+                {color: "Vermelho", emoji: "🔴", hex: "#ff6b6b"},
+                {color: "Amarelo", emoji: "🟡", hex: "#ffeb3b"},
+                {color: "Verde", emoji: "🟢", hex: "#4caf50"},
+                {color: "Azul", emoji: "🔵", hex: "#2196f3"},
+                {color: "Violeta", emoji: "💜", hex: "#ba68c8"}
+            ];
+            
+            // Embaralhar as cores
+            const shuffledColors = [...rainbowColorsData].sort(() => Math.random() - 0.5);
+            
+            // Criar as cores do arco-íris
+            shuffledColors.forEach((colorData, index) => {
+                const colorElement = document.createElement('div');
+                colorElement.className = 'rainbow-color';
+                colorElement.innerHTML = colorData.emoji;
+                colorElement.dataset.order = rainbowColorsData.findIndex(c => c.color === colorData.color);
+                colorElement.style.background = `linear-gradient(145deg, ${colorData.hex}, ${colorData.hex}99)`;
+                
+                // Eventos corrigidos
+                colorElement.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleRainbowClick(this);
+                });
+                
+                colorElement.addEventListener('touchend', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    handleRainbowClick(this);
+                });
+                
+                function handleRainbowClick(colorElement) {
+                    // Verificar se foi clicada na ordem correta
+                    const elementOrder = parseInt(colorElement.dataset.order);
+                    
+                    console.log(`Cor clicada: ordem ${elementOrder}, esperada: ${rainbowColors}`);
+                    
+                    if (elementOrder === rainbowColors) {
+                        colorElement.classList.add('found');
+                        rainbowColors++;
+                        
+                        // Tocar som fofinho para cor correta
+                        if (soundEnabled) {
+                            playCuteSound('rainbow');
+                        }
+                        
+                        document.getElementById('rainbowCounter').textContent = 
+                            `Cores: ${rainbowColors}/5`;
+                        
+                        // Se completou o jogo
+                        if (rainbowColors >= 5) {
+                            console.log("Minigame 5 completo! Arco-íris finalizado!");
+                            
+                            // Mostrar mensagem com animação
+                            showMessage(5);
+                            
+                            // Tocar som especial de arco-íris completo
+                            playCuteSound('celebration');
+                            
+                            // Habilitar botão próximo
+                            document.getElementById('nextBtn5').disabled = false;
+                            
+                            // Adicionar confete
+                            createConfetti();
+                        }
+                    } else {
+                        console.log("Cor errada!");
+                        
+                        // Tocar som de erro
+                        if (soundEnabled) {
+                            playErrorSound();
+                        }
+                        
+                        // Feedback visual de erro
+                        colorElement.style.transform = 'scale(0.9)';
+                        setTimeout(() => {
+                            colorElement.style.transform = '';
+                        }, 300);
+                    }
+                }
+                
+                rainbowContainer.appendChild(colorElement);
+            });
+            console.log("Arco-íris criado!");
+        }
+        
+        // Mostrar mensagem quando minigame for completado
+        function showMessage(gameNumber) {
+            console.log(`Mostrando mensagem ${gameNumber}`);
+            
+            const messageElement = document.getElementById(`message${gameNumber}`);
+            if (messageElement) {
+                // Marcar mensagem como desbloqueada
+                unlockedMessages[gameNumber] = true;
+                
+                // Mostrar com animação
+                messageElement.classList.add('message-unlocked');
+                messageElement.style.display = 'block';
+                
+                // Rolagem suave para a mensagem
+                setTimeout(() => {
+                    messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+            }
         }
         
         // Tocar som fofinho
@@ -1234,7 +1633,32 @@
                         break;
                 }
             } catch (e) {
-                console.log("Som fofinho desativado ou não suportado");
+                console.log("Som fofinho não suportado: ", e);
+            }
+        }
+        
+        // Tocar som de erro
+        function playErrorSound() {
+            if (!soundEnabled) return;
+            
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const oscillator = audioContext.createOscillator();
+                const gainNode = audioContext.createGain();
+                
+                oscillator.connect(gainNode);
+                gainNode.connect(audioContext.destination);
+                
+                oscillator.frequency.value = 150;
+                oscillator.type = 'square';
+                
+                gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                
+                oscillator.start(audioContext.currentTime);
+                oscillator.stop(audioContext.currentTime + 0.2);
+            } catch (e) {
+                console.log("Som de erro não suportado");
             }
         }
         
@@ -1380,508 +1804,6 @@
             });
         }
         
-        // Alternar som ligado/desligado
-        function toggleSound() {
-            soundEnabled = !soundEnabled;
-            updateSoundIcon();
-            
-            // Tocar som de confirmação
-            if (soundEnabled) {
-                playCuteSound('heart');
-            }
-        }
-        
-        // Atualizar ícone do som
-        function updateSoundIcon() {
-            const soundToggle = document.getElementById('soundToggle');
-            soundToggle.innerHTML = soundEnabled ? '🔔' : '🔕';
-            soundToggle.title = soundEnabled ? 'Som ligado' : 'Som desligado';
-        }
-        
-        // Mudar entre telas
-        function changeScreen(screenNumber) {
-            document.getElementById(`screen${currentScreen}`).classList.remove('active');
-            document.getElementById(`screen${screenNumber}`).classList.add('active');
-            currentScreen = screenNumber;
-            
-            // Se for a tela final, mostrar todas as mensagens desbloqueadas
-            if (screenNumber === 7) {
-                showAllUnlockedMessages();
-            }
-            
-            // Focar no botão principal da nova tela
-            setTimeout(() => {
-                const buttons = document.querySelectorAll(`#screen${screenNumber} .btn:not([disabled])`);
-                if (buttons.length > 0) {
-                    buttons[0].focus();
-                }
-            }, 100);
-        }
-        
-        // Mostrar todas as mensagens desbloqueadas na tela final
-        function showAllUnlockedMessages() {
-            const allMessagesDiv = document.getElementById('allMessages');
-            allMessagesDiv.innerHTML = '';
-            
-            let hasMessages = false;
-            
-            for (let i = 1; i <= 5; i++) {
-                if (unlockedMessages[i]) {
-                    hasMessages = true;
-                    const messageElement = document.getElementById(`message${i}`);
-                    if (messageElement) {
-                        const messageClone = messageElement.cloneNode(true);
-                        messageClone.classList.add('message-unlocked');
-                        messageClone.style.display = 'block';
-                        messageClone.style.margin = '15px 0';
-                        allMessagesDiv.appendChild(messageClone);
-                    }
-                }
-            }
-            
-            if (hasMessages) {
-                // Adicionar título antes das mensagens
-                const title = document.createElement('p');
-                title.innerHTML = '<strong>Veja todas as mensagens que você desbloqueou:</strong>';
-                title.style.marginBottom = '20px';
-                title.style.textAlign = 'center';
-                allMessagesDiv.insertBefore(title, allMessagesDiv.firstChild);
-            }
-        }
-        
-        // ========== MINI-GAME 1: CORAÇÕES ==========
-        function createHearts() {
-            const heartContainer = document.getElementById('heartContainer');
-            heartContainer.innerHTML = '';
-            
-            // Criar 12 corações (8 necessários) - menos para mobile
-            for (let i = 0; i < 12; i++) {
-                const heart = document.createElement('div');
-                heart.className = 'heart';
-                heart.innerHTML = '💖';
-                heart.dataset.collected = 'false';
-                
-                // Evento de toque
-                heart.addEventListener('click', collectHeart);
-                heart.addEventListener('touchend', collectHeart);
-                
-                function collectHeart(e) {
-                    e.preventDefault();
-                    if (heart.dataset.collected === 'false') {
-                        heart.dataset.collected = 'true';
-                        heart.classList.add('clicked');
-                        heartsCollected++;
-                        
-                        // Tocar som fofinho ao coletar coração
-                        if (soundEnabled && heartsCollected <= 8) {
-                            playCuteSound('heart');
-                        }
-                        
-                        // Atualizar contador
-                        document.getElementById('heartCounter').textContent = 
-                            `Corações: ${heartsCollected}/8`;
-                        
-                        // Atualizar barra de progresso
-                        const progress = (heartsCollected / 8) * 100;
-                        document.getElementById('progress1').style.width = `${progress}%`;
-                        
-                        // Se completou o jogo
-                        if (heartsCollected >= 8) {
-                            // Mostrar mensagem com animação
-                            showMessage(1);
-                            
-                            // Tocar som de sucesso
-                            playCuteSound('success');
-                            
-                            // Habilitar botão próximo
-                            document.getElementById('nextBtn1').disabled = false;
-                            document.getElementById('nextBtn1').focus();
-                            
-                            // Adicionar confete
-                            createConfetti();
-                        }
-                    }
-                }
-                
-                heartContainer.appendChild(heart);
-            }
-        }
-        
-        // ========== MINI-GAME 2: JOGO DA MEMÓRIA ==========
-        function createMemoryGame() {
-            const memoryGrid = document.getElementById('memoryGrid');
-            memoryGrid.innerHTML = '';
-            
-            // Pares de emojis especiais (menos pares para mobile)
-            const emojiPairs = [
-                '🍦', '🍦', // Sorvete - momentos doces
-                '🎬', '🎬', // Cinema - nossos filmes
-                '☕', '☕', // Café - conversas gostosas
-                '🎵', '🎵'  // Música - nossas músicas
-            ];
-            
-            // Embaralhar os emojis
-            const shuffledEmojis = [...emojiPairs].sort(() => Math.random() - 0.5);
-            
-            // Criar as cartas do jogo da memória
-            shuffledEmojis.forEach((emoji, index) => {
-                const card = document.createElement('div');
-                card.className = 'grid-item';
-                card.dataset.emoji = emoji;
-                card.dataset.index = index;
-                card.dataset.found = 'false';
-                
-                card.addEventListener('click', handleCardClick);
-                card.addEventListener('touchend', handleCardClick);
-                
-                function handleCardClick(e) {
-                    e.preventDefault();
-                    if (card.dataset.found === 'true' || !canFlip) return;
-                    
-                    // Mostrar o emoji
-                    card.textContent = emoji;
-                    card.classList.add('memory-pair');
-                    
-                    // Tocar som ao virar carta
-                    if (soundEnabled) {
-                        playCuteSound('heart');
-                    }
-                    
-                    if (!firstCard) {
-                        // Primeira carta virada
-                        firstCard = card;
-                    } else {
-                        // Segunda carta virada
-                        canFlip = false;
-                        
-                        if (firstCard.dataset.emoji === card.dataset.emoji) {
-                            // Par encontrado!
-                            firstCard.dataset.found = 'true';
-                            card.dataset.found = 'true';
-                            firstCard.classList.add('found');
-                            card.classList.add('found');
-                            
-                            memoryPairs++;
-                            document.getElementById('memoryCounter').textContent = 
-                                `Pares: ${memoryPairs}/4`;
-                            
-                            // Tocar som de sucesso para par encontrado
-                            if (soundEnabled) {
-                                playCuteSound('success');
-                            }
-                            
-                            // Se completou o jogo
-                            if (memoryPairs >= 4) {
-                                // Mostrar mensagem com animação
-                                showMessage(2);
-                                
-                                // Tocar som especial de conclusão
-                                playCuteSound('celebration');
-                                
-                                // Habilitar botão próximo
-                                document.getElementById('nextBtn2').disabled = false;
-                                document.getElementById('nextBtn2').focus();
-                                
-                                // Adicionar confete
-                                createConfetti();
-                            }
-                            
-                            firstCard = null;
-                            canFlip = true;
-                        } else {
-                            // Não é par, esconder novamente após 1 segundo
-                            setTimeout(() => {
-                                firstCard.textContent = '';
-                                card.textContent = '';
-                                firstCard.classList.remove('memory-pair');
-                                card.classList.remove('memory-pair');
-                                firstCard = null;
-                                canFlip = true;
-                            }, 1000);
-                        }
-                    }
-                }
-                
-                memoryGrid.appendChild(card);
-            });
-        }
-        
-        // ========== MINI-GAME 3: FLOR QUE DESABROCHA ==========
-        function waterFlower() {
-            const flower = document.getElementById('mainFlower');
-            waterCount++;
-            
-            // Tocar som fofinho ao regar
-            if (soundEnabled) {
-                playCuteSound('heart');
-            }
-            
-            // Atualizar contador
-            document.getElementById('waterCounter').textContent = 
-                `Regada: ${waterCount}/4 vezes`;
-            
-            // Animar a flor conforme é regada
-            if (waterCount === 1) {
-                flower.textContent = '🌱';
-            } else if (waterCount === 2) {
-                flower.textContent = '🌿';
-            } else if (waterCount === 3) {
-                flower.textContent = '🌷';
-            } else if (waterCount === 4) {
-                flower.textContent = '🌸';
-                flower.classList.add('bloom');
-                
-                // Tocar som especial de flor desabrochando
-                playCuteSound('bloom');
-                
-                // Criar efeito de pétalas caindo
-                createPetals();
-                
-                // Mostrar mensagem com animação
-                showMessage(3);
-                
-                // Habilitar botão próximo
-                document.getElementById('nextBtn3').disabled = false;
-                document.getElementById('nextBtn3').focus();
-                
-                // Adicionar confete
-                createConfetti();
-            }
-            
-            // Feedback tátil (vibração) se suportado
-            if (navigator.vibrate) {
-                navigator.vibrate(50);
-            }
-        }
-        
-        function createPetals() {
-            const petalsContainer = document.getElementById('petalsContainer');
-            petalsContainer.innerHTML = '';
-            
-            // Criar 10 pétalas caindo (menos para mobile)
-            for (let i = 0; i < 10; i++) {
-                const petal = document.createElement('div');
-                petal.className = 'petal';
-                petal.textContent = '🌸';
-                petal.style.left = `${Math.random() * 100}%`;
-                petal.style.animationDelay = `${Math.random() * 2}s`;
-                petal.style.fontSize = `${Math.random() * 1 + 1.2}rem`;
-                
-                petalsContainer.appendChild(petal);
-            }
-        }
-        
-        // ========== MINI-GAME 4: QUEBRA-CABEÇA ==========
-        function createPuzzle() {
-            const puzzleContainer = document.getElementById('puzzleContainer');
-            puzzleContainer.innerHTML = '';
-            
-            // Mensagem a ser revelada (mais curta para mobile)
-            const messageParts = [
-                {text: "Kajuzinho,", emoji: "1️⃣"},
-                {text: "eu", emoji: "2️⃣"},
-                {text: "sinto", emoji: "3️⃣"},
-                {text: "muito", emoji: "4️⃣"},
-                {text: "💖", emoji: "🌸"},
-                {text: "de", emoji: "✨"},
-                {text: "verdade!", emoji: "🦋"},
-                {text: "Prometo", emoji: "🌟"},
-                {text: "ser", emoji: "🌷"},
-                {text: "melhor!", emoji: "💝"}
-            ];
-            
-            // Embaralhar as peças
-            const shuffledParts = [...messageParts].sort(() => Math.random() - 0.5);
-            
-            // Criar peças do quebra-cabeça
-            shuffledParts.forEach((part, index) => {
-                const piece = document.createElement('div');
-                piece.className = 'puzzle-piece';
-                piece.innerHTML = part.emoji;
-                piece.dataset.order = messageParts.findIndex(p => p.text === part.text);
-                piece.dataset.text = part.text;
-                
-                piece.addEventListener('click', handlePuzzleClick);
-                piece.addEventListener('touchend', handlePuzzleClick);
-                
-                function handlePuzzleClick(e) {
-                    e.preventDefault();
-                    // Verificar se a peça foi clicada na ordem correta
-                    const expectedOrder = getNextPuzzleOrder();
-                    
-                    if (parseInt(piece.dataset.order) === expectedOrder) {
-                        piece.classList.add('solved');
-                        
-                        // Tocar som fofinho ao colocar peça correta
-                        if (soundEnabled) {
-                            playCuteSound('puzzle');
-                        }
-                        
-                        // Adicionar texto à mensagem
-                        const hiddenMessage = document.getElementById('hiddenMessage');
-                        hiddenMessage.style.display = 'block';
-                        hiddenMessage.innerHTML += ` ${piece.dataset.text}`;
-                        
-                        // Verificar se o puzzle foi resolvido
-                        if (document.querySelectorAll('.puzzle-piece.solved').length === messageParts.length) {
-                            // Mostrar mensagem com animação
-                            showMessage(4);
-                            
-                            puzzleSolved = true;
-                            document.getElementById('nextBtn4').disabled = false;
-                            document.getElementById('nextBtn4').focus();
-                            
-                            // Tocar som de celebração
-                            playCuteSound('celebration');
-                            
-                            // Adicionar confete
-                            createConfetti();
-                        }
-                    } else {
-                        // Tocar som de erro
-                        if (soundEnabled) {
-                            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                            const oscillator = audioContext.createOscillator();
-                            const gainNode = audioContext.createGain();
-                            
-                            oscillator.connect(gainNode);
-                            gainNode.connect(audioContext.destination);
-                            
-                            oscillator.frequency.value = 200;
-                            oscillator.type = 'sawtooth';
-                            
-                            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
-                            
-                            oscillator.start(audioContext.currentTime);
-                            oscillator.stop(audioContext.currentTime + 0.3);
-                        }
-                        
-                        // Feedback visual de erro
-                        piece.style.background = 'linear-gradient(145deg, #ffcccc, #ff9999)';
-                        setTimeout(() => {
-                            piece.style.background = '';
-                        }, 300);
-                    }
-                }
-                
-                puzzleContainer.appendChild(piece);
-            });
-        }
-        
-        function getNextPuzzleOrder() {
-            const solvedPieces = document.querySelectorAll('.puzzle-piece.solved');
-            return solvedPieces.length;
-        }
-        
-        // ========== MINI-GAME 5: ARCO-ÍRIS ==========
-        function createRainbow() {
-            const rainbowContainer = document.getElementById('rainbowContainer');
-            rainbowContainer.innerHTML = '';
-            
-            // Cores do arco-íris (menos cores para mobile)
-            const rainbowColorsData = [
-                {color: "Vermelho", emoji: "🔴", hex: "#ff6b6b"},
-                {color: "Amarelo", emoji: "🟡", hex: "#ffeb3b"},
-                {color: "Verde", emoji: "🟢", hex: "#4caf50"},
-                {color: "Azul", emoji: "🔵", hex: "#2196f3"},
-                {color: "Violeta", emoji: "💜", hex: "#ba68c8"}
-            ];
-            
-            // Embaralhar as cores
-            const shuffledColors = [...rainbowColorsData].sort(() => Math.random() - 0.5);
-            
-            // Criar as cores do arco-íris
-            shuffledColors.forEach((colorData, index) => {
-                const colorElement = document.createElement('div');
-                colorElement.className = 'rainbow-color';
-                colorElement.innerHTML = colorData.emoji;
-                colorElement.dataset.order = rainbowColorsData.findIndex(c => c.color === colorData.color);
-                colorElement.style.background = `linear-gradient(145deg, ${colorData.hex}, ${colorData.hex}99)`;
-                
-                colorElement.addEventListener('click', handleRainbowClick);
-                colorElement.addEventListener('touchend', handleRainbowClick);
-                
-                function handleRainbowClick(e) {
-                    e.preventDefault();
-                    // Verificar se foi clicada na ordem correta
-                    if (parseInt(colorElement.dataset.order) === rainbowColors) {
-                        colorElement.classList.add('found');
-                        rainbowColors++;
-                        
-                        // Tocar som fofinho para cor correta
-                        if (soundEnabled) {
-                            playCuteSound('rainbow');
-                        }
-                        
-                        document.getElementById('rainbowCounter').textContent = 
-                            `Cores: ${rainbowColors}/5`;
-                        
-                        // Se completou o jogo
-                        if (rainbowColors >= 5) {
-                            // Mostrar mensagem com animação
-                            showMessage(5);
-                            
-                            // Tocar som especial de arco-íris completo
-                            playCuteSound('celebration');
-                            
-                            // Habilitar botão próximo
-                            document.getElementById('nextBtn5').disabled = false;
-                            document.getElementById('nextBtn5').focus();
-                            
-                            // Adicionar confete
-                            createConfetti();
-                        }
-                    } else {
-                        // Tocar som de erro
-                        if (soundEnabled) {
-                            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
-                            const oscillator = audioContext.createOscillator();
-                            const gainNode = audioContext.createGain();
-                            
-                            oscillator.connect(gainNode);
-                            gainNode.connect(audioContext.destination);
-                            
-                            oscillator.frequency.value = 150;
-                            oscillator.type = 'square';
-                            
-                            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
-                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
-                            
-                            oscillator.start(audioContext.currentTime);
-                            oscillator.stop(audioContext.currentTime + 0.2);
-                        }
-                        
-                        // Feedback visual de erro
-                        colorElement.style.transform = 'scale(0.9)';
-                        setTimeout(() => {
-                            colorElement.style.transform = '';
-                        }, 300);
-                    }
-                }
-                
-                rainbowContainer.appendChild(colorElement);
-            });
-        }
-        
-        // Mostrar mensagem quando minigame for completado
-        function showMessage(gameNumber) {
-            const messageElement = document.getElementById(`message${gameNumber}`);
-            if (messageElement) {
-                // Marcar mensagem como desbloqueada
-                unlockedMessages[gameNumber] = true;
-                
-                // Mostrar com animação
-                messageElement.classList.add('message-unlocked');
-                messageElement.style.display = 'block';
-                
-                // Rolagem suave para a mensagem
-                setTimeout(() => {
-                    messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                }, 300);
-            }
-        }
-        
         // Criar efeito de confete
         function createConfetti() {
             const celebrationDiv = document.getElementById('celebration');
@@ -1904,7 +1826,9 @@
                 
                 // Remover após animação
                 setTimeout(() => {
-                    confetti.remove();
+                    if (confetti.parentNode) {
+                        confetti.remove();
+                    }
                 }, 3000);
             }
             
@@ -1930,16 +1854,18 @@
         
         // ========== RESPOSTA FINAL ==========
         function showForgiveness(forgiven) {
+            console.log(`Resposta: ${forgiven ? 'Perdão concedido' : 'Precisa conversar'}`);
+            
             const responseDiv = document.getElementById('forgivenessResponse');
             responseDiv.style.display = 'block';
             
             if (forgiven) {
                 responseDiv.innerHTML = `
-                    <h3 style="color:#ff6ba6;">Obrigado, Kajuzinho! 💝✨</h3>
+                    <h3 style="color:#ff6ba6;">Obrigado, meu Kajuzinho! 💝✨</h3>
                     <p>Você não imagina o quanto isso significa para mim! Meu coração está pulando de alegria!</p>
                     <p>Prometo honrar esse perdão e fazer de tudo para vermos muitos arco-íris juntos.</p>
                     <p>Você é a pessoa mais especial do mundo e vou lembrar disso todos os dias.</p>
-                    <p>Te adoro mais do que todas as estrelas do céu! 🌟🌌</p>
+                    <p>Te amo mais do que todas as estrelas do céu! 🌟🌌</p>
                     <div style="font-size:2rem; margin:15px 0; display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
                         <span>💖</span><span>🌸</span><span>🦋</span><span>🌷</span><span>✨</span>
                     </div>
@@ -1964,7 +1890,7 @@
             } else {
                 responseDiv.innerHTML = `
                     <h3 style="color:#2196f3;">Eu entendo perfeitamente, Kajuzinho 🌷</h3>
-                    <p>Respeito muito seus sentimentos e agradeço por ser honesta comigo.</p>
+                    <p>Respeito muito seus sentimentos e agradeço por ser honesto comigo.</p>
                     <p>Estou aqui, no seu tempo, quando você quiser conversar. Meu coração está aberto para ouvir o seu.</p>
                     <p>O importante é que você saiba que meu arrependimento é verdadeiro e meu carinho por você é imenso.</p>
                     <p>Mesmo que leve tempo, eu vou estar aqui, esperando com paciência e carinho.</p>
@@ -2000,9 +1926,19 @@
             restartBtn.textContent = 'Jogar novamente? 💖';
             restartBtn.style.background = 'linear-gradient(to right, #ffd6e8, #ffb8d9)';
             restartBtn.style.boxShadow = '0 5px 0 #ff9ec0';
-            restartBtn.onclick = function() {
+            
+            // Evento corrigido para reiniciar
+            restartBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
                 location.reload();
-            };
+            });
+            
+            restartBtn.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                location.reload();
+            });
             
             responseDiv.appendChild(restartBtn);
             
@@ -2016,7 +1952,35 @@
         function isMobile() {
             return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
         }
+        
+        // Inicializar Audio Context no primeiro clique (requisito do iOS)
+        function initAudioContext() {
+            if (!window.audioContextInitialized) {
+                try {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    // Criar um som silencioso para "acordar" o contexto de áudio
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    gainNode.gain.value = 0;
+                    
+                    oscillator.start();
+                    oscillator.stop(audioContext.currentTime + 0.001);
+                    
+                    window.audioContextInitialized = true;
+                    console.log("Audio Context inicializado!");
+                } catch (e) {
+                    console.log("Não foi possível inicializar Audio Context: ", e);
+                }
+            }
+        }
+        
+        // Adicionar evento para inicializar áudio no primeiro toque
+        document.addEventListener('touchstart', initAudioContext, { once: true });
+        document.addEventListener('click', initAudioContext, { once: true });
     </script>
 </body>
 </html>
-
