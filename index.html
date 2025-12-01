@@ -1,0 +1,2021 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>💖 Para Kajuzinho</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            -webkit-text-size-adjust: 100%;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+        }
+        
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow-x: hidden;
+            touch-action: manipulation;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #ffebf3 0%, #e3f2ff 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 15px;
+            color: #5a3d5c;
+            min-height: 100vh;
+            -webkit-overflow-scrolling: touch;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background-color: rgba(255, 255, 255, 0.98);
+            border-radius: 25px;
+            box-shadow: 0 10px 30px rgba(231, 107, 172, 0.25);
+            overflow: hidden;
+            padding: 25px 20px;
+            text-align: center;
+            border: 6px solid #ffcfe0;
+            position: relative;
+        }
+        
+        .container::before {
+            content: "💖 Para Kajuzinho 💖";
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: linear-gradient(to right, #ff9ec0, #a8d8ff);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            white-space: nowrap;
+            z-index: 10;
+        }
+        
+        h1 {
+            color: #ff6ba6;
+            margin-bottom: 15px;
+            font-size: 2.2rem;
+            text-shadow: 2px 2px 0px #ffe4f0;
+            background: linear-gradient(to right, #ff6ba6, #ff8e53);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            padding: 10px 0;
+            line-height: 1.2;
+        }
+        
+        h2 {
+            color: #5a3d5c;
+            margin: 20px 0 15px;
+            font-size: 1.6rem;
+            position: relative;
+            display: inline-block;
+            padding: 0 15px;
+        }
+        
+        h2::after {
+            content: "";
+            position: absolute;
+            bottom: -6px;
+            left: 15%;
+            width: 70%;
+            height: 3px;
+            background: linear-gradient(to right, #ff9ec0, #a8d8ff);
+            border-radius: 2px;
+        }
+        
+        p {
+            line-height: 1.6;
+            margin-bottom: 18px;
+            font-size: 1.1rem;
+            color: #6d4c6f;
+            text-align: justify;
+            text-align-last: center;
+        }
+        
+        .screen {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .active {
+            display: block;
+        }
+        
+        .intro-text {
+            background: linear-gradient(to bottom right, #fff0f7, #f0f9ff);
+            padding: 20px;
+            border-radius: 20px;
+            margin: 20px 0;
+            border: 3px solid #ffcfe0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .intro-text::before {
+            content: "💝";
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 2.5rem;
+            opacity: 0.15;
+        }
+        
+        .btn {
+            background: linear-gradient(to right, #ff7bac, #ff9a3d);
+            color: white;
+            border: none;
+            padding: 16px 30px;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            cursor: pointer;
+            margin: 12px 8px;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 0 #e04d87;
+            width: calc(100% - 16px);
+            max-width: 300px;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+        
+        .btn:active {
+            transform: translateY(4px);
+            box-shadow: 0 1px 0 #e04d87;
+        }
+        
+        .btn:disabled {
+            opacity: 0.6;
+            transform: none !important;
+            box-shadow: 0 5px 0 #e04d87 !important;
+        }
+        
+        .game-area {
+            background-color: #f9f7ff;
+            border-radius: 20px;
+            padding: 20px 15px;
+            margin: 20px 0;
+            border: 3px solid #d5c8ff;
+            position: relative;
+        }
+        
+        .heart-container {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 20px 0;
+            padding: 0 5px;
+        }
+        
+        .heart {
+            width: 55px;
+            height: 55px;
+            background: radial-gradient(circle at 30% 30%, #ff9ec0, #ff7bac);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            user-select: none;
+            box-shadow: 0 6px 10px rgba(255, 122, 172, 0.3);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        
+        .heart:active {
+            transform: scale(1.15);
+            background: radial-gradient(circle at 30% 30%, #ffb8d9, #ff8ab8);
+            box-shadow: 0 0 20px #ff9ec0;
+        }
+        
+        .heart.clicked {
+            background: radial-gradient(circle at 30% 30%, #ff4d94, #ff2a7f);
+            transform: scale(1.15);
+            box-shadow: 0 0 20px #ff9ec0;
+            animation: heartbeat 0.5s;
+        }
+        
+        .message-box {
+            background: linear-gradient(145deg, #ffffff, #fff5f9);
+            border-radius: 18px;
+            padding: 20px 15px;
+            margin: 20px 0;
+            border: 3px solid #ffcfe0;
+            text-align: center;
+            min-height: 140px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: inset 0 0 15px rgba(255, 206, 224, 0.4);
+        }
+        
+        .hidden-message {
+            display: none;
+            font-size: 1.15rem;
+            color: #7a5a7c;
+            font-style: italic;
+            margin-top: 15px;
+            padding: 15px;
+            background: linear-gradient(to right, #f9f0ff, #f0f9ff);
+            border-radius: 15px;
+            border-left: 5px solid #ff7bac;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            line-height: 1.6;
+            text-align: justify;
+            text-align-last: center;
+        }
+        
+        .game-instructions {
+            font-size: 0.95rem;
+            color: #9d7b9f;
+            margin-top: 12px;
+            font-style: italic;
+            background-color: #f5f0ff;
+            padding: 10px 15px;
+            border-radius: 10px;
+            display: inline-block;
+            max-width: 90%;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            margin: 20px 0;
+            overflow: hidden;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .progress-bar {
+            height: 16px;
+            background: linear-gradient(to right, #ff9ec0, #a8d8ff);
+            width: 0%;
+            transition: width 0.5s ease;
+            border-radius: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .progress-bar::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+            animation: shimmer 2s infinite;
+        }
+        
+        .final-message {
+            background: linear-gradient(145deg, #ffe4f0, #d9f0ff);
+            padding: 25px 20px;
+            border-radius: 20px;
+            margin: 25px 0;
+            border: 4px solid #ff7bac;
+            box-shadow: 0 8px 20px rgba(255, 122, 172, 0.25);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .final-message::before, .final-message::after {
+            content: "💖";
+            position: absolute;
+            font-size: 3rem;
+            opacity: 0.1;
+        }
+        
+        .final-message::before {
+            top: 10px;
+            left: 10px;
+        }
+        
+        .final-message::after {
+            bottom: 10px;
+            right: 10px;
+        }
+        
+        .hearts-animation {
+            font-size: 2.5rem;
+            margin: 20px 0;
+            animation: pulse 1.5s infinite;
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        
+        .game-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px auto;
+            max-width: 320px;
+            padding: 0 5px;
+        }
+        
+        .grid-item {
+            width: 100%;
+            aspect-ratio: 1;
+            background: linear-gradient(145deg, #ffd6e8, #ffb8d9);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 10px rgba(255, 122, 172, 0.25);
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        
+        .grid-item:active {
+            transform: scale(0.95);
+            box-shadow: 0 2px 5px rgba(255, 122, 172, 0.3);
+        }
+        
+        .grid-item.found {
+            background: linear-gradient(145deg, #a8d8ff, #7bc0ff);
+            transform: scale(0.95);
+            box-shadow: 0 0 15px #a8d8ff;
+        }
+        
+        .puzzle-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin: 20px auto;
+            max-width: 300px;
+            padding: 0 5px;
+        }
+        
+        .puzzle-piece {
+            width: 85px;
+            height: 85px;
+            background: linear-gradient(145deg, #ffd6e8, #ffb8d9);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 10px rgba(255, 122, 172, 0.25);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        
+        .puzzle-piece:active {
+            transform: rotate(5deg) scale(0.95);
+        }
+        
+        .puzzle-piece.solved {
+            background: linear-gradient(145deg, #b5ffc9, #8affa8);
+            transform: scale(0.95);
+            box-shadow: 0 0 15px #b5ffc9;
+        }
+        
+        .memory-pair {
+            background: linear-gradient(145deg, #d5c8ff, #b8a6ff);
+            color: white;
+            font-weight: bold;
+        }
+        
+        .flower-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 180px;
+            margin: 20px 0;
+            position: relative;
+        }
+        
+        .flower {
+            font-size: 4rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            filter: drop-shadow(0 4px 8px rgba(255, 122, 172, 0.4));
+            position: relative;
+            z-index: 2;
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        
+        .flower:active {
+            transform: scale(1.1) rotate(10deg);
+        }
+        
+        .flower.bloom {
+            animation: bloom 0.8s forwards;
+        }
+        
+        .petals {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            pointer-events: none;
+        }
+        
+        .petal {
+            position: absolute;
+            font-size: 1.8rem;
+            opacity: 0;
+            animation: fall 3s linear infinite;
+            pointer-events: none;
+        }
+        
+        .rainbow-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 0 5px;
+        }
+        
+        .rainbow-color {
+            width: 70px;
+            height: 70px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+            -webkit-tap-highlight-color: transparent;
+            touch-action: manipulation;
+        }
+        
+        .rainbow-color:active {
+            transform: scale(0.95);
+        }
+        
+        .rainbow-color.found {
+            transform: scale(0.95);
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+        }
+        
+        .game-counter {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #ff6ba6;
+            background-color: #fff0f7;
+            padding: 10px 15px;
+            border-radius: 50px;
+            display: inline-block;
+            margin: 15px 0;
+            border: 2px solid #ffcfe0;
+            min-width: 180px;
+        }
+        
+        .game-title {
+            color: #ff6ba6;
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            background-color: #fff0f7;
+            border-radius: 15px;
+            display: inline-block;
+            max-width: 90%;
+        }
+        
+        .game-completion {
+            font-size: 1.2rem;
+            color: #5a3d5c;
+            background: linear-gradient(to right, #fff0f7, #f0f9ff);
+            padding: 15px;
+            border-radius: 15px;
+            margin: 15px 0;
+            border: 2px dashed #ff7bac;
+            text-align: left;
+        }
+        
+        .game-completion p {
+            margin-bottom: 10px;
+            text-align: left;
+            text-align-last: left;
+            font-size: 1rem;
+        }
+        
+        .swipe-hint {
+            font-size: 0.9rem;
+            color: #888;
+            margin-top: 15px;
+            padding: 8px;
+            background-color: #f8f8f8;
+            border-radius: 10px;
+            display: none;
+        }
+        
+        .message-unlocked {
+            animation: messageAppear 0.8s ease;
+            display: block !important;
+        }
+        
+        .sound-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(to right, #ff9ec0, #a8d8ff);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 100;
+            border: 3px solid white;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        @keyframes heartbeat {
+            0% { transform: scale(1.15); }
+            25% { transform: scale(1.25); }
+            50% { transform: scale(1.15); }
+            75% { transform: scale(1.2); }
+            100% { transform: scale(1.15); }
+        }
+        
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+        
+        @keyframes bloom {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.3) rotate(360deg); }
+        }
+        
+        @keyframes fall {
+            0% { transform: translateY(-80px) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(150px) rotate(360deg); opacity: 0; }
+        }
+        
+        @keyframes messageAppear {
+            0% { 
+                opacity: 0; 
+                transform: translateY(20px) scale(0.9);
+            }
+            70% {
+                transform: translateY(-5px) scale(1.02);
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0) scale(1);
+            }
+        }
+        
+        /* Melhorias para telas muito pequenas */
+        @media (max-width: 380px) {
+            .container {
+                padding: 20px 15px;
+                border-width: 5px;
+            }
+            
+            h1 {
+                font-size: 1.9rem;
+            }
+            
+            h2 {
+                font-size: 1.4rem;
+            }
+            
+            .heart {
+                width: 50px;
+                height: 50px;
+                font-size: 1.6rem;
+            }
+            
+            .game-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 8px;
+                max-width: 280px;
+            }
+            
+            .grid-item {
+                font-size: 1.8rem;
+            }
+            
+            .puzzle-container {
+                grid-template-columns: repeat(3, 1fr);
+                max-width: 270px;
+            }
+            
+            .puzzle-piece {
+                width: 80px;
+                height: 80px;
+                font-size: 1.6rem;
+            }
+            
+            .rainbow-color {
+                width: 65px;
+                height: 65px;
+                font-size: 1.6rem;
+            }
+            
+            .btn {
+                padding: 14px 25px;
+                font-size: 1.1rem;
+            }
+            
+            .hearts-animation {
+                font-size: 2rem;
+                gap: 10px;
+            }
+            
+            .sound-toggle {
+                width: 45px;
+                height: 45px;
+                top: 15px;
+                right: 15px;
+                font-size: 1.3rem;
+            }
+        }
+        
+        /* Orientação paisagem */
+        @media (max-height: 600px) and (orientation: landscape) {
+            body {
+                padding: 10px;
+                align-items: flex-start;
+            }
+            
+            .container {
+                max-height: 95vh;
+                overflow-y: auto;
+                margin: 10px 0;
+            }
+            
+            .heart-container {
+                gap: 8px;
+                margin: 15px 0;
+            }
+            
+            .heart {
+                width: 45px;
+                height: 45px;
+                font-size: 1.5rem;
+            }
+            
+            .game-grid {
+                max-width: 280px;
+                gap: 8px;
+            }
+            
+            .grid-item {
+                font-size: 1.6rem;
+            }
+            
+            .sound-toggle {
+                top: 10px;
+                right: 10px;
+            }
+        }
+        
+        /* Prevenir zoom em inputs no iOS */
+        @media screen and (max-width: 768px) {
+            input, select, textarea {
+                font-size: 16px !important;
+            }
+        }
+        
+        /* Melhorar toques para mobile */
+        button, .heart, .grid-item, .puzzle-piece, .rainbow-color {
+            cursor: pointer;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+        
+        .celebration {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        
+        .confetti {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+    <!-- Botão de controle de som -->
+    <div class="sound-toggle" id="soundToggle" onclick="toggleSound()">
+        🔔
+    </div>
+    
+    <div class="container">
+        <!-- Tela de Introdução -->
+        <div id="screen1" class="screen active">
+            <h1>Para meu Kajuzinho 💖</h1>
+            <div class="intro-text">
+                <p>Meu querido Kajuzinho,</p>
+                <p>Sei que magoei você e meu coração está apertadinho só de pensar nisso... 😔</p>
+                <p>Preparei esse joguinho especial com todo meu carinho, porque palavras às vezes não são suficientes para mostrar o quanto me importo com você.</p>
+                <p>Cada minigame tem uma mensagem do meu coração para o seu. Espero que você possa sentir minha sinceridade em cada detalhe.</p>
+                <p>Você é muito especial para mim e eu realmente quero fazer as coisas direito.</p>
+            </div>
+            <div class="hearts-animation">
+                <span>🌷</span><span>💝</span><span>🌸</span>
+            </div>
+            <button class="btn" onclick="changeScreen(2)">Vamos começar, Kajuzinho?</button>
+            <div class="swipe-hint" id="swipeHint">💡 Toque nos botões para jogar!</div>
+        </div>
+        
+        <!-- Mini-game 1: Coletar corações -->
+        <div id="screen2" class="screen">
+            <div class="game-title">Mini-game 1: Colete meus corações 💕</div>
+            <p>Kajuzinho, cada coração aqui guarda um pedacinho do meu carinho por você. Toque para coletá-los!</p>
+            
+            <div class="progress-container">
+                <div id="progress1" class="progress-bar"></div>
+            </div>
+            
+            <div class="game-area">
+                <div class="heart-container" id="heartContainer">
+                    <!-- Os corações serão gerados via JavaScript -->
+                </div>
+                <div class="game-counter" id="heartCounter">Corações: 0/8</div>
+            </div>
+            
+            <div id="message1" class="hidden-message">
+                💖 <strong>Mensagem 1:</strong> Kajuzinho, você conseguiu coletar todos os meus corações! Isso é porque meu coração já é todo seu, mesmo quando estou sem jeito. Cada batida lembra o quanto você é importante para mim. Eu sei que falhei, mas meu sentimento por você é verdadeiro e cheio de carinho. 💖
+            </div>
+            
+            <p class="game-instructions">Toque em 8 corações para mostrar que aceita meu carinho!</p>
+            <button class="btn" onclick="changeScreen(3)" id="nextBtn1" disabled>Próximo jogo 🌸</button>
+        </div>
+        
+        <!-- Mini-game 2: Memória dos momentos -->
+        <div id="screen3" class="screen">
+            <div class="game-title">Mini-game 2: Encontre os pares especiais 🎀</div>
+            <p>Kajuzinho, vamos encontrar os pares que representam coisas boas que quero viver com você!</p>
+            
+            <div class="game-area">
+                <div class="game-grid" id="memoryGrid">
+                    <!-- Os itens de memória serão gerados via JavaScript -->
+                </div>
+                <div class="game-counter" id="memoryCounter">Pares: 0/4</div>
+            </div>
+            
+            <div id="message2" class="hidden-message">
+                🌸 <strong>Mensagem 2:</strong> Encontrar esses pares foi fácil, né? Porque você e eu combinamos tão bem... Quero criar muitos momentos especiais com você de novo. Lembrar das risadas, dos abraços apertados, das conversas sem fim. Prometo valorizar cada segundo ao seu lado, meu Kajuzinho. 🌸
+            </div>
+            
+            <p class="game-instructions">Encontre todos os 4 pares combinando os emojis iguais!</p>
+            <button class="btn" onclick="changeScreen(4)" id="nextBtn2" disabled>Próximo jogo 🦋</button>
+        </div>
+        
+        <!-- Mini-game 3: Flor que desabrocha -->
+        <div id="screen4" class="screen">
+            <div class="game-title">Mini-game 3: Faça a flor desabrochar 🌺</div>
+            <p>Kajuzinho, assim como essa flor precisa de cuidado para desabrochar, nosso relacionamento precisa do seu perdão para florescer de novo.</p>
+            
+            <div class="game-area">
+                <div class="flower-container">
+                    <div class="flower" id="mainFlower" onclick="waterFlower()">🌷</div>
+                    <div class="petals" id="petalsContainer"></div>
+                </div>
+                <div class="game-counter" id="waterCounter">Regada: 0/4 vezes</div>
+            </div>
+            
+            <div id="message3" class="hidden-message">
+                🌺 <strong>Mensagem 3:</strong> Você fez a flor desabrochar com paciência e cuidado... É exatamente isso que eu quero ter com você, Kajuzinho. Paciência para entender seus sentimentos, cuidado para não machucar você de novo, e dedicação para fazer nossa relação florescer linda e forte. 🌺
+            </div>
+            
+            <p class="game-instructions">Toque na flor 4 vezes para regá-la e vê-la desabrochar!</p>
+            <button class="btn" onclick="changeScreen(5)" id="nextBtn3" disabled>Próximo jogo 🧩</button>
+        </div>
+        
+        <!-- Mini-game 4: Quebra-cabeça da mensagem -->
+        <div id="screen5" class="screen">
+            <div class="game-title">Mini-game 4: Monte nossa mensagem 🧩</div>
+            <p>Kajuzinho, organize as peças para revelar uma mensagem que vem direto do meu coração!</p>
+            
+            <div class="game-area">
+                <div class="puzzle-container" id="puzzleContainer">
+                    <!-- Peças do quebra-cabeça serão geradas via JavaScript -->
+                </div>
+                <div class="message-box">
+                    <p>Mensagem especial para você:</p>
+                    <div id="hiddenMessage" class="hidden-message">
+                        <!-- Mensagem será revelada via JavaScript -->
+                    </div>
+                </div>
+            </div>
+            
+            <div id="message4" class="hidden-message">
+                🧩 <strong>Mensagem 4:</strong> Montar esse quebra-cabeça foi como eu me sinto agora: tentando juntar todas as peças para mostrar o quanto você significa para mim. Cada pedacinho representa um sentimento: saudade, arrependimento, carinho, esperança e principalmente, amor por você, Kajuzinho. 🧩
+            </div>
+            
+            <p class="game-instructions">Toque nas peças na ordem correta: 1, 2, 3, 4!</p>
+            <button class="btn" onclick="changeScreen(6)" id="nextBtn4" disabled>Próximo jogo 🌈</button>
+        </div>
+        
+        <!-- Mini-game 5: Arco-íris da reconciliação -->
+        <div id="screen6" class="screen">
+            <div class="game-title">Mini-game 5: Complete o arco-íris 🌈</div>
+            <p>Kajuzinho, depois da tempestade vem o arco-íris... Vamos completar o nosso?</p>
+            
+            <div class="game-area">
+                <div class="rainbow-container" id="rainbowContainer">
+                    <!-- As cores do arco-íris serão geradas via JavaScript -->
+                </div>
+                <div class="game-counter" id="rainbowCounter">Cores: 0/5</div>
+            </div>
+            
+            <div id="message5" class="hidden-message">
+                🌈 <strong>Mensagem 5:</strong> Nosso arco-íris está completo! Isso significa que, mesmo depois dos desentendimentos (a tempestade), podemos ter algo lindo e colorido de novo. Eu quero fazer de tudo para ver seu sorriso de novo, para fazer nossos dias serem coloridos e felizes. Você é meu arco-íris, Kajuzinho. 🌈
+            </div>
+            
+            <p class="game-instructions">Toque em cada cor na ordem do arco-íris!</p>
+            <button class="btn" onclick="changeScreen(7)" id="nextBtn5" disabled>Mensagem Final 💌</button>
+        </div>
+        
+        <!-- Tela Final: Pedido de perdão -->
+        <div id="screen7" class="screen">
+            <h2>Para meu Kajuzinho 💌</h2>
+            
+            <div class="final-message">
+                <div class="hearts-animation">
+                    <span>💖</span><span>🌸</span><span>💝</span><span>🌷</span>
+                </div>
+                
+                <p>Meu querido Kajuzinho,</p>
+                
+                <p>Chegamos ao final desse joguinho, mas não quero que seja o final do nosso capítulo.</p>
+                
+                <div id="allMessages">
+                    <!-- Todas as mensagens dos minigames aparecerão aqui -->
+                </div>
+                
+                <p>Eu errei, eu sei. Mas meu arrependimento é verdadeiro. Você é uma pessoa incrível, iluminada, especial de um jeito único, e não quero perder você da minha vida.</p>
+                
+                <p>Prometo ouvir mais, me esforçar mais, valorizar mais cada momento com você.</p>
+                
+                <p>Então, com o coração na mão e toda a esperança do mundo, eu pergunto:</p>
+                
+                <h2 style="color:#ff6ba6; margin:15px 0;">Kajuzinho, você consegue me perdoar? 💖</h2>
+                
+                <div class="hearts-animation">
+                    <span>✨</span><span>🌟</span><span>⭐</span>
+                </div>
+            </div>
+            
+            <div>
+                <button class="btn" onclick="showForgiveness(true)" style="background:linear-gradient(to right, #8affa8, #5cff8a); box-shadow:0 5px 0 #4cd46a;">Sim, eu te perdôo! 💝</button>
+                <button class="btn" onclick="showForgiveness(false)" style="background:linear-gradient(to right, #a8d8ff, #7bc0ff); box-shadow:0 5px 0 #5ca8e0;">Vamos conversar primeiro 🌷</button>
+            </div>
+            
+            <div id="forgivenessResponse" class="hidden-message" style="margin-top: 20px;"></div>
+        </div>
+    </div>
+
+    <!-- Elemento para confete -->
+    <div id="celebration" class="celebration"></div>
+
+    <!-- Áudio para sons -->
+    <audio id="heartSound" preload="auto">
+        <!-- Criaremos o som via JavaScript -->
+    </audio>
+    <audio id="successSound" preload="auto">
+        <!-- Criaremos o som via JavaScript -->
+    </audio>
+    <audio id="bloomSound" preload="auto">
+        <!-- Criaremos o som via JavaScript -->
+    </audio>
+    <audio id="puzzleSound" preload="auto">
+        <!-- Criaremos o som via JavaScript -->
+    </audio>
+    <audio id="rainbowSound" preload="auto">
+        <!-- Criaremos o som via JavaScript -->
+    </audio>
+    <audio id="celebrationSound" preload="auto">
+        <!-- Criaremos o som via JavaScript -->
+    </audio>
+
+    <script>
+        // Variáveis do jogo
+        let heartsCollected = 0;
+        let memoryPairs = 0;
+        let waterCount = 0;
+        let puzzleSolved = false;
+        let rainbowColors = 0;
+        let currentScreen = 1;
+        let firstCard = null;
+        let canFlip = true;
+        let soundEnabled = true;
+        
+        // Array para armazenar mensagens desbloqueadas
+        let unlockedMessages = [];
+        
+        // Inicializar o jogo
+        document.addEventListener('DOMContentLoaded', function() {
+            createHearts();
+            createMemoryGame();
+            createPuzzle();
+            createRainbow();
+            
+            // Criar sons fofinhos
+            createSounds();
+            
+            // Mostrar dica de swipe após 3 segundos
+            setTimeout(() => {
+                document.getElementById('swipeHint').style.display = 'block';
+            }, 3000);
+            
+            // Configurar eventos touch para melhor experiência mobile
+            setupTouchEvents();
+            
+            // Inicializar array de mensagens
+            for (let i = 1; i <= 5; i++) {
+                unlockedMessages[i] = false;
+            }
+            
+            // Atualizar ícone do som
+            updateSoundIcon();
+        });
+        
+        // Configurar eventos touch
+        function setupTouchEvents() {
+            // Prevenir comportamento padrão de toque longo
+            document.addEventListener('touchstart', function(e) {
+                if (e.target.classList.contains('btn') || 
+                    e.target.classList.contains('heart') ||
+                    e.target.classList.contains('grid-item') ||
+                    e.target.classList.contains('puzzle-piece') ||
+                    e.target.classList.contains('rainbow-color') ||
+                    e.target.classList.contains('flower')) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
+            
+            // Melhor feedback visual para toques
+            const touchElements = document.querySelectorAll('.heart, .grid-item, .puzzle-piece, .rainbow-color, .flower');
+            touchElements.forEach(el => {
+                el.addEventListener('touchstart', function() {
+                    this.style.opacity = '0.8';
+                });
+                
+                el.addEventListener('touchend', function() {
+                    this.style.opacity = '1';
+                });
+            });
+        }
+        
+        // Criar sons fofinhos usando Web Audio API
+        function createSounds() {
+            // Som para corações (sino suave)
+            createHeartSound();
+            
+            // Som para jogo da memória (notas alegres)
+            createSuccessSound();
+            
+            // Som para flor desabrochando (som de flutuação)
+            createBloomSound();
+            
+            // Som para quebra-cabeça (notas mágicas)
+            createPuzzleSound();
+            
+            // Som para arco-íris (escala ascendente)
+            createRainbowSound();
+            
+            // Som para celebração final (fanfarra fofa)
+            createCelebrationSound();
+        }
+        
+        function createHeartSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = 523.25; // Nota C5
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.3, audioContext.currentTime + 0.1);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 1.5);
+            
+            // Criar mais osciladores para som de sino
+            for (let i = 1; i <= 3; i++) {
+                setTimeout(() => {
+                    const osc2 = audioContext.createOscillator();
+                    const gain2 = audioContext.createGain();
+                    
+                    osc2.connect(gain2);
+                    gain2.connect(audioContext.destination);
+                    
+                    osc2.frequency.value = 523.25 * (i + 1);
+                    osc2.type = 'sine';
+                    
+                    gain2.gain.setValueAtTime(0, audioContext.currentTime);
+                    gain2.gain.linearRampToValueAtTime(0.1, audioContext.currentTime + 0.1);
+                    gain2.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1);
+                    
+                    osc2.start(audioContext.currentTime);
+                    osc2.stop(audioContext.currentTime + 1);
+                }, i * 100);
+            }
+        }
+        
+        function createSuccessSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const notes = [659.25, 783.99, 987.77, 1318.51]; // E5, G5, B5, E6
+            const duration = 0.3;
+            
+            notes.forEach((freq, index) => {
+                setTimeout(() => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = freq;
+                    oscillator.type = 'triangle';
+                    
+                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.05);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + duration);
+                }, index * 150);
+            });
+        }
+        
+        function createBloomSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            // Som de flutuação suave
+            oscillator.frequency.setValueAtTime(329.63, audioContext.currentTime); // E4
+            oscillator.frequency.exponentialRampToValueAtTime(659.25, audioContext.currentTime + 1.5); // E5
+            
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.25, audioContext.currentTime + 0.3);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 2);
+        }
+        
+        function createPuzzleSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const notes = [523.25, 587.33, 659.25, 698.46, 783.99]; // C5, D5, E5, F5, G5
+            const duration = 0.2;
+            
+            notes.forEach((freq, index) => {
+                setTimeout(() => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = freq;
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.15, audioContext.currentTime + 0.05);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + duration);
+                }, index * 100);
+            });
+        }
+        
+        function createRainbowSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const notes = [261.63, 329.63, 392.00, 493.88, 587.33]; // C4, E4, G4, B4, D5
+            const duration = 0.25;
+            
+            notes.forEach((freq, index) => {
+                setTimeout(() => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = freq;
+                    oscillator.type = 'sine';
+                    
+                    // Aumentar volume gradualmente
+                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.1);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + duration);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + duration);
+                }, index * 200);
+            });
+        }
+        
+        function createCelebrationSound() {
+            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            const notes = [
+                {freq: 523.25, time: 0},   // C5
+                {freq: 659.25, time: 0.2}, // E5
+                {freq: 783.99, time: 0.4}, // G5
+                {freq: 1046.50, time: 0.6}, // C6
+                {freq: 783.99, time: 0.8}, // G5
+                {freq: 1046.50, time: 1.0} // C6
+            ];
+            
+            notes.forEach(note => {
+                setTimeout(() => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = note.freq;
+                    oscillator.type = 'triangle';
+                    
+                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.25, audioContext.currentTime + 0.1);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.5);
+                }, note.time * 1000);
+            });
+        }
+        
+        // Tocar som fofinho
+        function playCuteSound(soundType) {
+            if (!soundEnabled) return;
+            
+            try {
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                
+                switch(soundType) {
+                    case 'heart':
+                        // Som de sino suave para corações
+                        playBellSound(audioContext, 523.25);
+                        break;
+                    case 'success':
+                        // Notas alegres para memória
+                        playHappyNotes(audioContext);
+                        break;
+                    case 'bloom':
+                        // Som de flutuação para flor
+                        playBloomSound(audioContext);
+                        break;
+                    case 'puzzle':
+                        // Notas mágicas para quebra-cabeça
+                        playMagicNotes(audioContext);
+                        break;
+                    case 'rainbow':
+                        // Escala ascendente para arco-íris
+                        playAscendingScale(audioContext);
+                        break;
+                    case 'celebration':
+                        // Fanfarra fofa para celebração
+                        playCuteFanfare(audioContext);
+                        break;
+                }
+            } catch (e) {
+                console.log("Som fofinho desativado ou não suportado");
+            }
+        }
+        
+        // Funções de som específicas
+        function playBellSound(audioContext, baseFreq) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.value = baseFreq;
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.1);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 1.5);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 1.5);
+        }
+        
+        function playHappyNotes(audioContext) {
+            const notes = [659.25, 783.99, 987.77, 1318.51];
+            
+            notes.forEach((freq, index) => {
+                setTimeout(() => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = freq;
+                    oscillator.type = 'triangle';
+                    
+                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.15, audioContext.currentTime + 0.05);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.3);
+                }, index * 150);
+            });
+        }
+        
+        function playBloomSound(audioContext) {
+            const oscillator = audioContext.createOscillator();
+            const gainNode = audioContext.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+            
+            oscillator.frequency.setValueAtTime(329.63, audioContext.currentTime);
+            oscillator.frequency.exponentialRampToValueAtTime(659.25, audioContext.currentTime + 1.5);
+            
+            oscillator.type = 'sine';
+            
+            gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+            gainNode.gain.linearRampToValueAtTime(0.2, audioContext.currentTime + 0.3);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2);
+            
+            oscillator.start(audioContext.currentTime);
+            oscillator.stop(audioContext.currentTime + 2);
+        }
+        
+        function playMagicNotes(audioContext) {
+            const notes = [523.25, 587.33, 659.25, 698.46, 783.99];
+            
+            notes.forEach((freq, index) => {
+                setTimeout(() => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = freq;
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.12, audioContext.currentTime + 0.05);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.2);
+                }, index * 100);
+            });
+        }
+        
+        function playAscendingScale(audioContext) {
+            const notes = [261.63, 329.63, 392.00, 493.88, 587.33];
+            
+            notes.forEach((freq, index) => {
+                setTimeout(() => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = freq;
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.18, audioContext.currentTime + 0.1);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.25);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.25);
+                }, index * 200);
+            });
+        }
+        
+        function playCuteFanfare(audioContext) {
+            const notes = [
+                {freq: 523.25, time: 0},
+                {freq: 659.25, time: 0.2},
+                {freq: 783.99, time: 0.4},
+                {freq: 1046.50, time: 0.6},
+                {freq: 783.99, time: 0.8},
+                {freq: 1046.50, time: 1.0}
+            ];
+            
+            notes.forEach(note => {
+                setTimeout(() => {
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = note.freq;
+                    oscillator.type = 'triangle';
+                    
+                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.22, audioContext.currentTime + 0.1);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 0.5);
+                }, note.time * 1000);
+            });
+        }
+        
+        // Alternar som ligado/desligado
+        function toggleSound() {
+            soundEnabled = !soundEnabled;
+            updateSoundIcon();
+            
+            // Tocar som de confirmação
+            if (soundEnabled) {
+                playCuteSound('heart');
+            }
+        }
+        
+        // Atualizar ícone do som
+        function updateSoundIcon() {
+            const soundToggle = document.getElementById('soundToggle');
+            soundToggle.innerHTML = soundEnabled ? '🔔' : '🔕';
+            soundToggle.title = soundEnabled ? 'Som ligado' : 'Som desligado';
+        }
+        
+        // Mudar entre telas
+        function changeScreen(screenNumber) {
+            document.getElementById(`screen${currentScreen}`).classList.remove('active');
+            document.getElementById(`screen${screenNumber}`).classList.add('active');
+            currentScreen = screenNumber;
+            
+            // Se for a tela final, mostrar todas as mensagens desbloqueadas
+            if (screenNumber === 7) {
+                showAllUnlockedMessages();
+            }
+            
+            // Focar no botão principal da nova tela
+            setTimeout(() => {
+                const buttons = document.querySelectorAll(`#screen${screenNumber} .btn:not([disabled])`);
+                if (buttons.length > 0) {
+                    buttons[0].focus();
+                }
+            }, 100);
+        }
+        
+        // Mostrar todas as mensagens desbloqueadas na tela final
+        function showAllUnlockedMessages() {
+            const allMessagesDiv = document.getElementById('allMessages');
+            allMessagesDiv.innerHTML = '';
+            
+            let hasMessages = false;
+            
+            for (let i = 1; i <= 5; i++) {
+                if (unlockedMessages[i]) {
+                    hasMessages = true;
+                    const messageElement = document.getElementById(`message${i}`);
+                    if (messageElement) {
+                        const messageClone = messageElement.cloneNode(true);
+                        messageClone.classList.add('message-unlocked');
+                        messageClone.style.display = 'block';
+                        messageClone.style.margin = '15px 0';
+                        allMessagesDiv.appendChild(messageClone);
+                    }
+                }
+            }
+            
+            if (hasMessages) {
+                // Adicionar título antes das mensagens
+                const title = document.createElement('p');
+                title.innerHTML = '<strong>Veja todas as mensagens que você desbloqueou:</strong>';
+                title.style.marginBottom = '20px';
+                title.style.textAlign = 'center';
+                allMessagesDiv.insertBefore(title, allMessagesDiv.firstChild);
+            }
+        }
+        
+        // ========== MINI-GAME 1: CORAÇÕES ==========
+        function createHearts() {
+            const heartContainer = document.getElementById('heartContainer');
+            heartContainer.innerHTML = '';
+            
+            // Criar 12 corações (8 necessários) - menos para mobile
+            for (let i = 0; i < 12; i++) {
+                const heart = document.createElement('div');
+                heart.className = 'heart';
+                heart.innerHTML = '💖';
+                heart.dataset.collected = 'false';
+                
+                // Evento de toque
+                heart.addEventListener('click', collectHeart);
+                heart.addEventListener('touchend', collectHeart);
+                
+                function collectHeart(e) {
+                    e.preventDefault();
+                    if (heart.dataset.collected === 'false') {
+                        heart.dataset.collected = 'true';
+                        heart.classList.add('clicked');
+                        heartsCollected++;
+                        
+                        // Tocar som fofinho ao coletar coração
+                        if (soundEnabled && heartsCollected <= 8) {
+                            playCuteSound('heart');
+                        }
+                        
+                        // Atualizar contador
+                        document.getElementById('heartCounter').textContent = 
+                            `Corações: ${heartsCollected}/8`;
+                        
+                        // Atualizar barra de progresso
+                        const progress = (heartsCollected / 8) * 100;
+                        document.getElementById('progress1').style.width = `${progress}%`;
+                        
+                        // Se completou o jogo
+                        if (heartsCollected >= 8) {
+                            // Mostrar mensagem com animação
+                            showMessage(1);
+                            
+                            // Tocar som de sucesso
+                            playCuteSound('success');
+                            
+                            // Habilitar botão próximo
+                            document.getElementById('nextBtn1').disabled = false;
+                            document.getElementById('nextBtn1').focus();
+                            
+                            // Adicionar confete
+                            createConfetti();
+                        }
+                    }
+                }
+                
+                heartContainer.appendChild(heart);
+            }
+        }
+        
+        // ========== MINI-GAME 2: JOGO DA MEMÓRIA ==========
+        function createMemoryGame() {
+            const memoryGrid = document.getElementById('memoryGrid');
+            memoryGrid.innerHTML = '';
+            
+            // Pares de emojis especiais (menos pares para mobile)
+            const emojiPairs = [
+                '🍦', '🍦', // Sorvete - momentos doces
+                '🎬', '🎬', // Cinema - nossos filmes
+                '☕', '☕', // Café - conversas gostosas
+                '🎵', '🎵'  // Música - nossas músicas
+            ];
+            
+            // Embaralhar os emojis
+            const shuffledEmojis = [...emojiPairs].sort(() => Math.random() - 0.5);
+            
+            // Criar as cartas do jogo da memória
+            shuffledEmojis.forEach((emoji, index) => {
+                const card = document.createElement('div');
+                card.className = 'grid-item';
+                card.dataset.emoji = emoji;
+                card.dataset.index = index;
+                card.dataset.found = 'false';
+                
+                card.addEventListener('click', handleCardClick);
+                card.addEventListener('touchend', handleCardClick);
+                
+                function handleCardClick(e) {
+                    e.preventDefault();
+                    if (card.dataset.found === 'true' || !canFlip) return;
+                    
+                    // Mostrar o emoji
+                    card.textContent = emoji;
+                    card.classList.add('memory-pair');
+                    
+                    // Tocar som ao virar carta
+                    if (soundEnabled) {
+                        playCuteSound('heart');
+                    }
+                    
+                    if (!firstCard) {
+                        // Primeira carta virada
+                        firstCard = card;
+                    } else {
+                        // Segunda carta virada
+                        canFlip = false;
+                        
+                        if (firstCard.dataset.emoji === card.dataset.emoji) {
+                            // Par encontrado!
+                            firstCard.dataset.found = 'true';
+                            card.dataset.found = 'true';
+                            firstCard.classList.add('found');
+                            card.classList.add('found');
+                            
+                            memoryPairs++;
+                            document.getElementById('memoryCounter').textContent = 
+                                `Pares: ${memoryPairs}/4`;
+                            
+                            // Tocar som de sucesso para par encontrado
+                            if (soundEnabled) {
+                                playCuteSound('success');
+                            }
+                            
+                            // Se completou o jogo
+                            if (memoryPairs >= 4) {
+                                // Mostrar mensagem com animação
+                                showMessage(2);
+                                
+                                // Tocar som especial de conclusão
+                                playCuteSound('celebration');
+                                
+                                // Habilitar botão próximo
+                                document.getElementById('nextBtn2').disabled = false;
+                                document.getElementById('nextBtn2').focus();
+                                
+                                // Adicionar confete
+                                createConfetti();
+                            }
+                            
+                            firstCard = null;
+                            canFlip = true;
+                        } else {
+                            // Não é par, esconder novamente após 1 segundo
+                            setTimeout(() => {
+                                firstCard.textContent = '';
+                                card.textContent = '';
+                                firstCard.classList.remove('memory-pair');
+                                card.classList.remove('memory-pair');
+                                firstCard = null;
+                                canFlip = true;
+                            }, 1000);
+                        }
+                    }
+                }
+                
+                memoryGrid.appendChild(card);
+            });
+        }
+        
+        // ========== MINI-GAME 3: FLOR QUE DESABROCHA ==========
+        function waterFlower() {
+            const flower = document.getElementById('mainFlower');
+            waterCount++;
+            
+            // Tocar som fofinho ao regar
+            if (soundEnabled) {
+                playCuteSound('heart');
+            }
+            
+            // Atualizar contador
+            document.getElementById('waterCounter').textContent = 
+                `Regada: ${waterCount}/4 vezes`;
+            
+            // Animar a flor conforme é regada
+            if (waterCount === 1) {
+                flower.textContent = '🌱';
+            } else if (waterCount === 2) {
+                flower.textContent = '🌿';
+            } else if (waterCount === 3) {
+                flower.textContent = '🌷';
+            } else if (waterCount === 4) {
+                flower.textContent = '🌸';
+                flower.classList.add('bloom');
+                
+                // Tocar som especial de flor desabrochando
+                playCuteSound('bloom');
+                
+                // Criar efeito de pétalas caindo
+                createPetals();
+                
+                // Mostrar mensagem com animação
+                showMessage(3);
+                
+                // Habilitar botão próximo
+                document.getElementById('nextBtn3').disabled = false;
+                document.getElementById('nextBtn3').focus();
+                
+                // Adicionar confete
+                createConfetti();
+            }
+            
+            // Feedback tátil (vibração) se suportado
+            if (navigator.vibrate) {
+                navigator.vibrate(50);
+            }
+        }
+        
+        function createPetals() {
+            const petalsContainer = document.getElementById('petalsContainer');
+            petalsContainer.innerHTML = '';
+            
+            // Criar 10 pétalas caindo (menos para mobile)
+            for (let i = 0; i < 10; i++) {
+                const petal = document.createElement('div');
+                petal.className = 'petal';
+                petal.textContent = '🌸';
+                petal.style.left = `${Math.random() * 100}%`;
+                petal.style.animationDelay = `${Math.random() * 2}s`;
+                petal.style.fontSize = `${Math.random() * 1 + 1.2}rem`;
+                
+                petalsContainer.appendChild(petal);
+            }
+        }
+        
+        // ========== MINI-GAME 4: QUEBRA-CABEÇA ==========
+        function createPuzzle() {
+            const puzzleContainer = document.getElementById('puzzleContainer');
+            puzzleContainer.innerHTML = '';
+            
+            // Mensagem a ser revelada (mais curta para mobile)
+            const messageParts = [
+                {text: "Kajuzinho,", emoji: "1️⃣"},
+                {text: "eu", emoji: "2️⃣"},
+                {text: "sinto", emoji: "3️⃣"},
+                {text: "muito", emoji: "4️⃣"},
+                {text: "💖", emoji: "🌸"},
+                {text: "de", emoji: "✨"},
+                {text: "verdade!", emoji: "🦋"},
+                {text: "Prometo", emoji: "🌟"},
+                {text: "ser", emoji: "🌷"},
+                {text: "melhor!", emoji: "💝"}
+            ];
+            
+            // Embaralhar as peças
+            const shuffledParts = [...messageParts].sort(() => Math.random() - 0.5);
+            
+            // Criar peças do quebra-cabeça
+            shuffledParts.forEach((part, index) => {
+                const piece = document.createElement('div');
+                piece.className = 'puzzle-piece';
+                piece.innerHTML = part.emoji;
+                piece.dataset.order = messageParts.findIndex(p => p.text === part.text);
+                piece.dataset.text = part.text;
+                
+                piece.addEventListener('click', handlePuzzleClick);
+                piece.addEventListener('touchend', handlePuzzleClick);
+                
+                function handlePuzzleClick(e) {
+                    e.preventDefault();
+                    // Verificar se a peça foi clicada na ordem correta
+                    const expectedOrder = getNextPuzzleOrder();
+                    
+                    if (parseInt(piece.dataset.order) === expectedOrder) {
+                        piece.classList.add('solved');
+                        
+                        // Tocar som fofinho ao colocar peça correta
+                        if (soundEnabled) {
+                            playCuteSound('puzzle');
+                        }
+                        
+                        // Adicionar texto à mensagem
+                        const hiddenMessage = document.getElementById('hiddenMessage');
+                        hiddenMessage.style.display = 'block';
+                        hiddenMessage.innerHTML += ` ${piece.dataset.text}`;
+                        
+                        // Verificar se o puzzle foi resolvido
+                        if (document.querySelectorAll('.puzzle-piece.solved').length === messageParts.length) {
+                            // Mostrar mensagem com animação
+                            showMessage(4);
+                            
+                            puzzleSolved = true;
+                            document.getElementById('nextBtn4').disabled = false;
+                            document.getElementById('nextBtn4').focus();
+                            
+                            // Tocar som de celebração
+                            playCuteSound('celebration');
+                            
+                            // Adicionar confete
+                            createConfetti();
+                        }
+                    } else {
+                        // Tocar som de erro
+                        if (soundEnabled) {
+                            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                            const oscillator = audioContext.createOscillator();
+                            const gainNode = audioContext.createGain();
+                            
+                            oscillator.connect(gainNode);
+                            gainNode.connect(audioContext.destination);
+                            
+                            oscillator.frequency.value = 200;
+                            oscillator.type = 'sawtooth';
+                            
+                            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+                            
+                            oscillator.start(audioContext.currentTime);
+                            oscillator.stop(audioContext.currentTime + 0.3);
+                        }
+                        
+                        // Feedback visual de erro
+                        piece.style.background = 'linear-gradient(145deg, #ffcccc, #ff9999)';
+                        setTimeout(() => {
+                            piece.style.background = '';
+                        }, 300);
+                    }
+                }
+                
+                puzzleContainer.appendChild(piece);
+            });
+        }
+        
+        function getNextPuzzleOrder() {
+            const solvedPieces = document.querySelectorAll('.puzzle-piece.solved');
+            return solvedPieces.length;
+        }
+        
+        // ========== MINI-GAME 5: ARCO-ÍRIS ==========
+        function createRainbow() {
+            const rainbowContainer = document.getElementById('rainbowContainer');
+            rainbowContainer.innerHTML = '';
+            
+            // Cores do arco-íris (menos cores para mobile)
+            const rainbowColorsData = [
+                {color: "Vermelho", emoji: "🔴", hex: "#ff6b6b"},
+                {color: "Amarelo", emoji: "🟡", hex: "#ffeb3b"},
+                {color: "Verde", emoji: "🟢", hex: "#4caf50"},
+                {color: "Azul", emoji: "🔵", hex: "#2196f3"},
+                {color: "Violeta", emoji: "💜", hex: "#ba68c8"}
+            ];
+            
+            // Embaralhar as cores
+            const shuffledColors = [...rainbowColorsData].sort(() => Math.random() - 0.5);
+            
+            // Criar as cores do arco-íris
+            shuffledColors.forEach((colorData, index) => {
+                const colorElement = document.createElement('div');
+                colorElement.className = 'rainbow-color';
+                colorElement.innerHTML = colorData.emoji;
+                colorElement.dataset.order = rainbowColorsData.findIndex(c => c.color === colorData.color);
+                colorElement.style.background = `linear-gradient(145deg, ${colorData.hex}, ${colorData.hex}99)`;
+                
+                colorElement.addEventListener('click', handleRainbowClick);
+                colorElement.addEventListener('touchend', handleRainbowClick);
+                
+                function handleRainbowClick(e) {
+                    e.preventDefault();
+                    // Verificar se foi clicada na ordem correta
+                    if (parseInt(colorElement.dataset.order) === rainbowColors) {
+                        colorElement.classList.add('found');
+                        rainbowColors++;
+                        
+                        // Tocar som fofinho para cor correta
+                        if (soundEnabled) {
+                            playCuteSound('rainbow');
+                        }
+                        
+                        document.getElementById('rainbowCounter').textContent = 
+                            `Cores: ${rainbowColors}/5`;
+                        
+                        // Se completou o jogo
+                        if (rainbowColors >= 5) {
+                            // Mostrar mensagem com animação
+                            showMessage(5);
+                            
+                            // Tocar som especial de arco-íris completo
+                            playCuteSound('celebration');
+                            
+                            // Habilitar botão próximo
+                            document.getElementById('nextBtn5').disabled = false;
+                            document.getElementById('nextBtn5').focus();
+                            
+                            // Adicionar confete
+                            createConfetti();
+                        }
+                    } else {
+                        // Tocar som de erro
+                        if (soundEnabled) {
+                            const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                            const oscillator = audioContext.createOscillator();
+                            const gainNode = audioContext.createGain();
+                            
+                            oscillator.connect(gainNode);
+                            gainNode.connect(audioContext.destination);
+                            
+                            oscillator.frequency.value = 150;
+                            oscillator.type = 'square';
+                            
+                            gainNode.gain.setValueAtTime(0.1, audioContext.currentTime);
+                            gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+                            
+                            oscillator.start(audioContext.currentTime);
+                            oscillator.stop(audioContext.currentTime + 0.2);
+                        }
+                        
+                        // Feedback visual de erro
+                        colorElement.style.transform = 'scale(0.9)';
+                        setTimeout(() => {
+                            colorElement.style.transform = '';
+                        }, 300);
+                    }
+                }
+                
+                rainbowContainer.appendChild(colorElement);
+            });
+        }
+        
+        // Mostrar mensagem quando minigame for completado
+        function showMessage(gameNumber) {
+            const messageElement = document.getElementById(`message${gameNumber}`);
+            if (messageElement) {
+                // Marcar mensagem como desbloqueada
+                unlockedMessages[gameNumber] = true;
+                
+                // Mostrar com animação
+                messageElement.classList.add('message-unlocked');
+                messageElement.style.display = 'block';
+                
+                // Rolagem suave para a mensagem
+                setTimeout(() => {
+                    messageElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }, 300);
+            }
+        }
+        
+        // Criar efeito de confete
+        function createConfetti() {
+            const celebrationDiv = document.getElementById('celebration');
+            celebrationDiv.innerHTML = '';
+            
+            const colors = ['#ff6ba6', '#ff9ec0', '#a8d8ff', '#ffeb3b', '#4caf50'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.left = `${Math.random() * 100}%`;
+                confetti.style.top = `${Math.random() * 100}%`;
+                confetti.style.transform = `rotate(${Math.random() * 360}deg)`;
+                
+                // Animação
+                confetti.style.animation = `confettiFall ${Math.random() * 2 + 1}s linear forwards`;
+                
+                celebrationDiv.appendChild(confetti);
+                
+                // Remover após animação
+                setTimeout(() => {
+                    confetti.remove();
+                }, 3000);
+            }
+            
+            // Adicionar estilo de animação dinamicamente
+            if (!document.querySelector('#confettiStyle')) {
+                const style = document.createElement('style');
+                style.id = 'confettiStyle';
+                style.textContent = `
+                    @keyframes confettiFall {
+                        0% {
+                            opacity: 1;
+                            transform: translateY(-100px) rotate(0deg);
+                        }
+                        100% {
+                            opacity: 0;
+                            transform: translateY(100vh) rotate(360deg);
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+        
+        // ========== RESPOSTA FINAL ==========
+        function showForgiveness(forgiven) {
+            const responseDiv = document.getElementById('forgivenessResponse');
+            responseDiv.style.display = 'block';
+            
+            if (forgiven) {
+                responseDiv.innerHTML = `
+                    <h3 style="color:#ff6ba6;">Obrigado, Kajuzinho! 💝✨</h3>
+                    <p>Você não imagina o quanto isso significa para mim! Meu coração está pulando de alegria!</p>
+                    <p>Prometo honrar esse perdão e fazer de tudo para vermos muitos arco-íris juntos.</p>
+                    <p>Você é a pessoa mais especial do mundo e vou lembrar disso todos os dias.</p>
+                    <p>Te adoro mais do que todas as estrelas do céu! 🌟🌌</p>
+                    <div style="font-size:2rem; margin:15px 0; display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+                        <span>💖</span><span>🌸</span><span>🦋</span><span>🌷</span><span>✨</span>
+                    </div>
+                `;
+                
+                // Tocar som especial de perdão concedido
+                if (soundEnabled) {
+                    playCuteSound('celebration');
+                    setTimeout(() => playCuteSound('celebration'), 500);
+                    setTimeout(() => playCuteSound('celebration'), 1000);
+                }
+                
+                // Feedback de celebração
+                if (navigator.vibrate) {
+                    navigator.vibrate([100, 50, 100, 50, 200]);
+                }
+                
+                // Confete em grande quantidade
+                for (let i = 0; i < 5; i++) {
+                    setTimeout(() => createConfetti(), i * 300);
+                }
+            } else {
+                responseDiv.innerHTML = `
+                    <h3 style="color:#2196f3;">Eu entendo perfeitamente, Kajuzinho 🌷</h3>
+                    <p>Respeito muito seus sentimentos e agradeço por ser honesta comigo.</p>
+                    <p>Estou aqui, no seu tempo, quando você quiser conversar. Meu coração está aberto para ouvir o seu.</p>
+                    <p>O importante é que você saiba que meu arrependimento é verdadeiro e meu carinho por você é imenso.</p>
+                    <p>Mesmo que leve tempo, eu vou estar aqui, esperando com paciência e carinho.</p>
+                    <div style="font-size:2rem; margin:15px 0; display:flex; justify-content:center; gap:10px; flex-wrap:wrap;">
+                        <span>🤝</span><span>💬</span><span>☕</span><span>🌅</span><span>💝</span>
+                    </div>
+                `;
+                
+                // Tocar som suave e reconfortante
+                if (soundEnabled) {
+                    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = audioContext.createOscillator();
+                    const gainNode = audioContext.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(audioContext.destination);
+                    
+                    oscillator.frequency.value = 329.63; // E4
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+                    gainNode.gain.linearRampToValueAtTime(0.15, audioContext.currentTime + 0.5);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 2);
+                    
+                    oscillator.start(audioContext.currentTime);
+                    oscillator.stop(audioContext.currentTime + 2);
+                }
+            }
+            
+            // Adicionar botão para reiniciar o jogo
+            const restartBtn = document.createElement('button');
+            restartBtn.className = 'btn';
+            restartBtn.textContent = 'Jogar novamente? 💖';
+            restartBtn.style.background = 'linear-gradient(to right, #ffd6e8, #ffb8d9)';
+            restartBtn.style.boxShadow = '0 5px 0 #ff9ec0';
+            restartBtn.onclick = function() {
+                location.reload();
+            };
+            
+            responseDiv.appendChild(restartBtn);
+            
+            // Rolagem suave para a resposta
+            setTimeout(() => {
+                responseDiv.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }, 300);
+        }
+        
+        // Detectar dispositivo móvel
+        function isMobile() {
+            return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+    </script>
+</body>
+</html>
